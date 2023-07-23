@@ -14,3 +14,5 @@ export const TABLE_STATUS = {
   closing: "CLOSING",
   break: "BREAK",
 };
+
+export const EURO_SYMBOL = <>&#8364;</>;

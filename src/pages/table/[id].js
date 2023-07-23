@@ -1,4 +1,5 @@
 import TopNav from "@/Components/Top";
+import { EURO_SYMBOL, classes, conditionalClasses } from "@/utils";
 import { useRouter } from "next/router";
 
 const ITEM_TYPE = {
@@ -7,15 +8,50 @@ const ITEM_TYPE = {
   dessert: "DESSERT",
 };
 
+const VARIARION_TYPE = {
+  increment: "INCREMENT",
+  decrement: "DECREMENT",
+  non: "NON",
+};
+
 function Cart() {
   const items = [
     {
+      id: 1,
       type: ITEM_TYPE.food,
       name: "Pizza Margarita",
+      price: 12.5,
+      isStarter: false,
       variations: [
-        { name: "Gluten Free", toPrice: 0 },
-        { name: "With mushrooms", toPrice: 0.5 },
+        { name: "Gluten Free", type: VARIARION_TYPE.non },
+        {
+          name: "With mushrooms",
+          type: VARIARION_TYPE.increment,
+          amount: 0.5,
+        },
       ],
+    },
+    {
+      id: 2,
+      type: ITEM_TYPE.drink,
+      name: "Mojito",
+      price: 4.5,
+      isStarter: false,
+      variations: [
+        {
+          name: "Strawberry",
+          type: VARIARION_TYPE.decrement,
+          amount: 0.5,
+        },
+      ],
+    },
+    {
+      id: 3,
+      type: ITEM_TYPE.dessert,
+      name: "Lava Cake",
+      price: 4.5,
+      isStarter: false,
+      variations: [],
     },
   ];
   return (
@@ -38,47 +74,46 @@ function Cart() {
         Cart
       </div>
       <div className="flex flex-col gap-1 sm:gap-2">
-        <button className="btn  h-auto btn-ghost flex text-sm">
-          <span>1</span>
-          <span className="grow flex flex-col md:flex-row items-start md:items-center md:gap-2">
-            <div>Pizza Margaratia</div>
-            <div className="ml-2 text-xs text-secondary-focus">Gluten free</div>
-            <div className="ml-2 text-xs text-secondary-focus">
-              With mushrooms
-            </div>
-          </span>
-          <span>$22.2</span>
-        </button>
-        <button className="btn  h-auto btn-ghost flex text-sm">
-          <span>2</span>
-          <span className="grow flex flex-col md:flex-row items-start md:items-center md:gap-2">
-            <div>Pepper steak</div>
-          </span>
-          <span>$45.5</span>
-        </button>
-        <button className="btn  h-auto btn-ghost flex text-sm">
-          <span>3</span>
-          <span className="grow flex flex-col md:flex-row items-start md:items-center md:gap-2">
-            <div>Tagatilli Pollo</div>
-            <div className="ml-2 text-xs text-secondary-focus">
-              Without garlic
-            </div>
-          </span>
-          <span>$12.1</span>
-        </button>
-        <button className="btn  h-auto btn-ghost flex text-sm">
-          <span>4</span>
-          <span className="grow flex flex-col md:flex-row items-start md:items-center md:gap-2">
-            <div>Mojito</div>
-            <div className="ml-2 text-xs text-secondary-focus">Strawberry</div>
-          </span>
-          <span>$6.5</span>
-        </button>
+        {items.map((item, index) => (
+          <button
+            className={classes(
+              "btn h-auto btn-ghost flex text-sm",
+              conditionalClasses(item.type, {
+                [ITEM_TYPE.food]: "border-l-2 border-l-primary",
+                [ITEM_TYPE.drink]: "border-l-2 border-l-error",
+                [ITEM_TYPE.dessert]: "border-l-2 border-l-info",
+              })
+            )}
+            key={item.id}
+          >
+            <span className="">{index + 1}</span>
+            <span className="grow flex flex-col md:flex-row items-start md:items-center md:gap-2">
+              <div>{item.name}</div>
+              {item.variations.map((variation) => (
+                <div className="ml-2 text-xs text-secondary-focus">
+                  {variation.name}
+                  {variation.type !== VARIARION_TYPE.non && (
+                    <>
+                      {" ("}
+                      {variation.type === VARIARION_TYPE.increment ? "+" : "-"}
+                      {EURO_SYMBOL}
+                      {variation.amount}
+                      {")"}
+                    </>
+                  )}
+                </div>
+              ))}
+            </span>
+            <span>
+              {EURO_SYMBOL} {item.price}
+            </span>
+          </button>
+        ))}
       </div>
 
       <div className="flex px-4 justify-center">
         <span className="">Total</span>
-        <span className="ml-2 font-bold">$56.3</span>
+        <span className="ml-2 font-bold">{EURO_SYMBOL} 96.3</span>
       </div>
     </div>
   );
