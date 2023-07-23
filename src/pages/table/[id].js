@@ -56,22 +56,8 @@ function Cart() {
   ];
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-primary flex justify-center gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-          />
-        </svg>
-        Cart
+      <div className="text-center font-bold text-lg">
+        Total: {EURO_SYMBOL} 96.3
       </div>
       <div className="flex flex-col gap-1 sm:gap-2">
         {items.map((item, index) => (
@@ -110,11 +96,24 @@ function Cart() {
           </button>
         ))}
       </div>
+    </div>
+  );
+}
 
-      <div className="flex px-4 justify-center">
-        <span className="">Total</span>
-        <span className="ml-2 font-bold">{EURO_SYMBOL} 96.3</span>
-      </div>
+function TableActions() {
+  return (
+    <div className="join">
+      <button
+        className="join-item btn-sm btn btn-primary grow"
+        onClick={() => window.order_modal.showModal()}
+      >
+        Order
+      </button>
+      <button className="join-item btn-sm btn btn-info grow">Discount</button>
+      <button className="join-item btn-sm btn btn-info grow">
+        Print Check
+      </button>
+      <button className="join-item btn-sm btn btn-info grow">Invoice</button>
     </div>
   );
 }
@@ -128,7 +127,73 @@ export default function Table() {
         Table: {+router.query.id + 1}
       </TopNav>
 
+      <TableActions />
       <Cart />
+
+      <dialog id="order_modal" className="modal">
+        <div className="bg-base-100 w-full h-full flex flex-col p-2 gap-2">
+          <div className="flex gap-2 justify-end">
+            {/* Actions */}
+            <div className="join">
+              <button
+                className="join-item btn-sm btn btn-error grow"
+                onClick={() => window.order_modal.close()}
+              >
+                Cancel
+              </button>
+
+              <button className="join-item btn-sm btn btn-success grow">
+                Save
+              </button>
+            </div>
+          </div>
+          {/* Categories */}
+
+          <div className="join">
+            <div className="collapse collapse-plus join-item">
+              <input type="checkbox" />
+              <div className="text-center collapse-title font-bold">Drinks</div>
+              <div className="flex flex-col gap-1 collapse-content">
+                <div className="btn btn-outline btn-info">Apperitives</div>
+                <div className="btn btn-outline btn-info">Coffee</div>
+                <div className="btn btn-outline btn-info">Cooktails</div>
+                <div className="btn btn-outline btn-info">Soft Drinks</div>
+                <div className="btn btn-outline btn-info">Red Wines</div>
+                <div className="btn btn-outline btn-info">White Wines</div>
+                <div className="btn btn-outline btn-info">Rose Wines</div>
+              </div>
+            </div>
+            <div className="collapse  collapse-plus join-item">
+              <input type="checkbox" />
+              <div className="text-center collapse-title font-bold">Foods</div>
+              <div className="flex flex-col gap-1 collapse-content">
+                <div className="btn btn-outline btn-info">Starters</div>
+
+                <div className="btn btn-outline btn-info">Pizza</div>
+
+                <div className="btn btn-outline btn-info">Side Dishes</div>
+
+                <div className="btn btn-outline btn-info">Pasta</div>
+
+                <div className="btn btn-outline btn-info">Steaks</div>
+
+                <div className="btn btn-outline btn-info">Salads</div>
+              </div>
+            </div>
+            <div className="collapse  collapse-plus join-item">
+              <input type="checkbox" />
+              <div className="text-center collapse-title font-bold">
+                Desserts
+              </div>
+              <div className="flex flex-col gap-1 collapse-content">
+                <div className="btn btn-outline btn-info">Hot desserts</div>
+
+                <div className="btn btn-outline btn-info">Cold desserts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 }
