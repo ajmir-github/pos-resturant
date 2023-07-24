@@ -1,6 +1,7 @@
 import TopNav from "@/Components/Top";
 import { EURO_SYMBOL, classes, conditionalClasses } from "@/utils";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const ITEM_TYPE = {
   food: "FOOD",
@@ -56,9 +57,6 @@ function Cart() {
   ];
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-center font-bold text-lg">
-        Total: {EURO_SYMBOL} 96.3
-      </div>
       <div className="flex flex-col gap-1 sm:gap-2">
         {items.map((item, index) => (
           <button
@@ -96,6 +94,9 @@ function Cart() {
           </button>
         ))}
       </div>
+      <div className="text-center font-bold text-lg">
+        Total: {EURO_SYMBOL} 96.3
+      </div>
     </div>
   );
 }
@@ -103,12 +104,7 @@ function Cart() {
 function TableActions() {
   return (
     <div className="join">
-      <button
-        className="join-item btn-sm btn btn-primary grow"
-        onClick={() => window.order_modal.showModal()}
-      >
-        Order
-      </button>
+      <button className="join-item btn-sm btn btn-primary grow">Send</button>
       <button className="join-item btn-sm btn btn-info grow">Discount</button>
       <button className="join-item btn-sm btn btn-info grow">
         Print Check
@@ -118,82 +114,107 @@ function TableActions() {
   );
 }
 
+function ItemsFilter({ categories, setCategory }) {
+  const [filterCategory, setFilterCategory] = useState(0);
+  const [filterSubCategory, setFilterSubCategory] = useState(0);
+
+  useEffect(() => {
+    const { name, subCategories } = categories[filterCategory];
+    setCategory(name, subCategories[filterSubCategory]);
+  }, [filterCategory, filterSubCategory]);
+
+  return (
+    <div className="flex gap-2 flex-col">
+      {/* Categories */}
+      <div className="tabs font-bold">
+        {categories.map((category, index) => (
+          <button
+            onClick={() => setFilterCategory(index)}
+            className={classes(
+              "tab grow tab-bordered",
+              filterCategory === index && "tab-active"
+            )}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+      {/* SUB-Categories */}
+
+      <div className="tabs tabs-boxed">
+        {categories[filterCategory].subCategories.map((subCategory, index) => (
+          <button
+            onClick={() => setFilterSubCategory(index)}
+            className={classes(
+              "tab",
+              filterSubCategory === index && "tab-active"
+            )}
+          >
+            {subCategory}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PlaceOrder() {
+  const categories = [
+    {
+      name: "Drinks",
+      subCategories: [
+        "Apperitives",
+        "Coffee",
+        "Cooktails",
+        "Soft Drinks",
+        "Red Wines",
+        "White Wines",
+        "Rose Wines",
+      ],
+    },
+    {
+      name: "Foods",
+      subCategories: [
+        "Starters",
+        "Pizza",
+        "Side Dishes",
+        "Pasta",
+        "Steaks",
+        "Salads",
+      ],
+    },
+    {
+      name: "Desserts",
+      subCategories: ["Hot desserts", "Cold desserts"],
+    },
+  ];
+  const setCategory = (category, subCategory) => {
+    console.log({ category, subCategory });
+  };
+  return (
+    <div className="flex gap-2 flex-col">
+      <ItemsFilter categories={categories} setCategory={setCategory} />
+    </div>
+  );
+}
+
 export default function Table() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4">
-      <TopNav backHref={"/sales"} className="flex gap-2 px-2 justify-end">
-        Table: {+router.query.id + 1}
-      </TopNav>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2">
+      <div className="flex flex-col gap-2 sm:gap-4">
+        <TopNav backHref={"/sales"} className="flex gap-2 px-2 justify-end">
+          Table: {+router.query.id + 1}
+        </TopNav>
 
-      <TableActions />
-      <Cart />
+        <TableActions />
+        <Cart />
+      </div>
 
-      <dialog id="order_modal" className="modal">
-        <div className="bg-base-100 w-full h-full flex flex-col p-2 gap-2">
-          <div className="flex gap-2 justify-end">
-            {/* Actions */}
-            <div className="join">
-              <button
-                className="join-item btn-sm btn btn-error grow"
-                onClick={() => window.order_modal.close()}
-              >
-                Cancel
-              </button>
-
-              <button className="join-item btn-sm btn btn-success grow">
-                Save
-              </button>
-            </div>
-          </div>
-          {/* Categories */}
-
-          <div className="join">
-            <div className="collapse collapse-plus join-item">
-              <input type="checkbox" />
-              <div className="text-center collapse-title font-bold">Drinks</div>
-              <div className="flex flex-col gap-1 collapse-content">
-                <div className="btn btn-outline btn-info">Apperitives</div>
-                <div className="btn btn-outline btn-info">Coffee</div>
-                <div className="btn btn-outline btn-info">Cooktails</div>
-                <div className="btn btn-outline btn-info">Soft Drinks</div>
-                <div className="btn btn-outline btn-info">Red Wines</div>
-                <div className="btn btn-outline btn-info">White Wines</div>
-                <div className="btn btn-outline btn-info">Rose Wines</div>
-              </div>
-            </div>
-            <div className="collapse  collapse-plus join-item">
-              <input type="checkbox" />
-              <div className="text-center collapse-title font-bold">Foods</div>
-              <div className="flex flex-col gap-1 collapse-content">
-                <div className="btn btn-outline btn-info">Starters</div>
-
-                <div className="btn btn-outline btn-info">Pizza</div>
-
-                <div className="btn btn-outline btn-info">Side Dishes</div>
-
-                <div className="btn btn-outline btn-info">Pasta</div>
-
-                <div className="btn btn-outline btn-info">Steaks</div>
-
-                <div className="btn btn-outline btn-info">Salads</div>
-              </div>
-            </div>
-            <div className="collapse  collapse-plus join-item">
-              <input type="checkbox" />
-              <div className="text-center collapse-title font-bold">
-                Desserts
-              </div>
-              <div className="flex flex-col gap-1 collapse-content">
-                <div className="btn btn-outline btn-info">Hot desserts</div>
-
-                <div className="btn btn-outline btn-info">Cold desserts</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </dialog>
+      <div className="flex flex-col gap-2">
+        <PlaceOrder />
+      </div>
     </div>
   );
 }
