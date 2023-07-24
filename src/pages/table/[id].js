@@ -199,115 +199,105 @@ function PlaceOrder() {
   return (
     <div className="flex gap-2 flex-col">
       <ItemsFilter categories={categories} setCategory={setCategory} />
-      <div className="flex flex-wrap gap-2">
-        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
-          <figure>
-            <Image
-              className="h-32"
-              width={160}
-              height={160}
-              src="/images/1-760-Four-Cheese-Pasta-www.loavesanddishes.net_.jpg"
-              alt="Shoes"
-            />
-          </figure>
+      <div className="flex flex-wrap gap-2 justify-center">
+        <div className=" w-36 rounded shadow bg-base overflow-hidden">
+          <Image
+            className="h-32"
+            width={160}
+            height={160}
+            src="/images/1-760-Four-Cheese-Pasta-www.loavesanddishes.net_.jpg"
+            alt="Shoes"
+          />
           <div className="flex flex-col">
-            <h2 className="card-title p-1">Pizza Margarita</h2>
             <div className="join">
               <button className="grow btn rounded-none btn-primary btn-sm">
                 Add
               </button>
               <button className="grow btn rounded-none btn-secondary btn-sm">
-                Edit
+                More
               </button>
             </div>
+            <h2 className="text-lg text-center p-2 ">Ragatoni</h2>
           </div>
         </div>
-        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
-          <figure>
-            <Image
-              className="h-32"
-              width={160}
-              height={160}
-              src="/images/7ed63c9c6146cde6ea5a4d801cd702d79792670d.jpeg"
-              alt="Shoes"
-            />
-          </figure>
+        <div className=" w-36 rounded shadow bg-base overflow-hidden">
+          <Image
+            className="h-32"
+            width={160}
+            height={160}
+            src="/images/7ed63c9c6146cde6ea5a4d801cd702d79792670d.jpeg"
+            alt="Shoes"
+          />
           <div className="flex flex-col">
-            <h2 className="card-title p-1">Pizza Margarita</h2>
             <div className="join">
               <button className="grow btn rounded-none btn-primary btn-sm">
                 Add
               </button>
               <button className="grow btn rounded-none btn-secondary btn-sm">
-                Edit
+                More
               </button>
             </div>
+            <h2 className="text-lg text-center p-2 ">Panacotta</h2>
           </div>
         </div>
-        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
-          <figure>
-            <Image
-              className="h-32"
-              width={160}
-              height={160}
-              src="/images/abhishek-hajare-_3dTLrMwiW8-unsplash.jpg"
-              alt="Shoes"
-            />
-          </figure>
+        <div className=" w-36 rounded shadow bg-base overflow-hidden">
+          <Image
+            className="h-32"
+            width={160}
+            height={160}
+            src="/images/abhishek-hajare-_3dTLrMwiW8-unsplash.jpg"
+            alt="Shoes"
+          />
           <div className="flex flex-col">
-            <h2 className="card-title p-1">Pizza Margarita</h2>
             <div className="join">
               <button className="grow btn rounded-none btn-primary btn-sm">
                 Add
               </button>
               <button className="grow btn rounded-none btn-secondary btn-sm">
-                Edit
+                More
               </button>
             </div>
+            <h2 className="text-lg text-center p-2 ">Taggitalla Vegano</h2>
           </div>
         </div>
-        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
-          <figure>
-            <Image
-              className="h-32"
-              width={160}
-              height={160}
-              src="/images/Vegetable-Kabobs-001.jpg"
-              alt="Shoes"
-            />
-          </figure>
+        <div className=" w-36 rounded shadow bg-base overflow-hidden">
+          <Image
+            className="h-32"
+            width={160}
+            height={160}
+            src="/images/Vegetable-Kabobs-001.jpg"
+            alt="Shoes"
+          />
           <div className="flex flex-col">
-            <h2 className="card-title p-1">Pizza Margarita</h2>
             <div className="join">
               <button className="grow btn rounded-none btn-primary btn-sm">
                 Add
               </button>
               <button className="grow btn rounded-none btn-secondary btn-sm">
-                Edit
+                More
               </button>
             </div>
+            <h2 className="text-lg text-center p-2 ">Mixed Grill</h2>
           </div>
         </div>
-        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
-          <figure>
-            <Image
-              className="h-32"
-              width={160}
-              height={160}
-              src="/images/tonic-gin-with-fresh-cucumber-rosemarie-spicy-royalty-free-image-1586188927.jpg"
-              alt="Shoes"
-            />
-          </figure>
+        <div className=" w-36 rounded shadow bg-base overflow-hidden">
+          <Image
+            className="h-32"
+            width={160}
+            height={160}
+            src="/images/tonic-gin-with-fresh-cucumber-rosemarie-spicy-royalty-free-image-1586188927.jpg"
+            alt="Shoes"
+          />
           <div className="flex flex-col">
-            <h2 className="card-title p-1">Pizza Margarita</h2>
             <div className="join">
               <button className="grow btn rounded-none btn-primary btn-sm">
                 Add
               </button>
               <button className="grow btn rounded-none btn-secondary btn-sm">
-                Edit
+                More
               </button>
             </div>
+            <h2 className="text-lg text-center p-2 ">Gin Tonic</h2>
           </div>
         </div>
       </div>
