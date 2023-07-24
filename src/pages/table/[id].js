@@ -1,5 +1,6 @@
 import TopNav from "@/Components/Top";
 import { EURO_SYMBOL, classes, conditionalClasses } from "@/utils";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -71,7 +72,7 @@ function Cart() {
             key={item.id}
           >
             <span className="">{index + 1}</span>
-            <span className="grow flex flex-col md:flex-row items-start md:items-center md:gap-2">
+            <span className="grow flex flex-col lg:flex-row items-start lg:items-center md:gap-2">
               <div>{item.name}</div>
               {item.variations.map((variation) => (
                 <div className="ml-2 text-xs text-secondary-focus">
@@ -97,6 +98,9 @@ function Cart() {
       <div className="text-center font-bold text-lg">
         Total: {EURO_SYMBOL} 96.3
       </div>
+      <button className="join-item btn-sm btn btn-success grow" disabled>
+        Save
+      </button>
     </div>
   );
 }
@@ -104,12 +108,13 @@ function Cart() {
 function TableActions() {
   return (
     <div className="join">
-      <button className="join-item btn-sm btn btn-primary grow">Send</button>
-      <button className="join-item btn-sm btn btn-info grow">Discount</button>
-      <button className="join-item btn-sm btn btn-info grow">
+      <button className="join-item btn-sm btn btn-primary grow">
+        Discount
+      </button>
+      <button className="join-item btn-sm btn btn-warning grow">
         Print Check
       </button>
-      <button className="join-item btn-sm btn btn-info grow">Invoice</button>
+      <button className="join-item btn-sm btn btn-error grow">Invoice</button>
     </div>
   );
 }
@@ -194,6 +199,118 @@ function PlaceOrder() {
   return (
     <div className="flex gap-2 flex-col">
       <ItemsFilter categories={categories} setCategory={setCategory} />
+      <div className="flex flex-wrap gap-2">
+        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
+          <figure>
+            <Image
+              className="h-32"
+              width={160}
+              height={160}
+              src="/images/1-760-Four-Cheese-Pasta-www.loavesanddishes.net_.jpg"
+              alt="Shoes"
+            />
+          </figure>
+          <div className="flex flex-col">
+            <h2 className="card-title p-1">Pizza Margarita</h2>
+            <div className="join">
+              <button className="grow btn rounded-none btn-primary btn-sm">
+                Add
+              </button>
+              <button className="grow btn rounded-none btn-secondary btn-sm">
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
+          <figure>
+            <Image
+              className="h-32"
+              width={160}
+              height={160}
+              src="/images/7ed63c9c6146cde6ea5a4d801cd702d79792670d.jpeg"
+              alt="Shoes"
+            />
+          </figure>
+          <div className="flex flex-col">
+            <h2 className="card-title p-1">Pizza Margarita</h2>
+            <div className="join">
+              <button className="grow btn rounded-none btn-primary btn-sm">
+                Add
+              </button>
+              <button className="grow btn rounded-none btn-secondary btn-sm">
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
+          <figure>
+            <Image
+              className="h-32"
+              width={160}
+              height={160}
+              src="/images/abhishek-hajare-_3dTLrMwiW8-unsplash.jpg"
+              alt="Shoes"
+            />
+          </figure>
+          <div className="flex flex-col">
+            <h2 className="card-title p-1">Pizza Margarita</h2>
+            <div className="join">
+              <button className="grow btn rounded-none btn-primary btn-sm">
+                Add
+              </button>
+              <button className="grow btn rounded-none btn-secondary btn-sm">
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
+          <figure>
+            <Image
+              className="h-32"
+              width={160}
+              height={160}
+              src="/images/Vegetable-Kabobs-001.jpg"
+              alt="Shoes"
+            />
+          </figure>
+          <div className="flex flex-col">
+            <h2 className="card-title p-1">Pizza Margarita</h2>
+            <div className="join">
+              <button className="grow btn rounded-none btn-primary btn-sm">
+                Add
+              </button>
+              <button className="grow btn rounded-none btn-secondary btn-sm">
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="card card-compact w-36 bg-base-100 shadow-xl overflow-hidden">
+          <figure>
+            <Image
+              className="h-32"
+              width={160}
+              height={160}
+              src="/images/tonic-gin-with-fresh-cucumber-rosemarie-spicy-royalty-free-image-1586188927.jpg"
+              alt="Shoes"
+            />
+          </figure>
+          <div className="flex flex-col">
+            <h2 className="card-title p-1">Pizza Margarita</h2>
+            <div className="join">
+              <button className="grow btn rounded-none btn-primary btn-sm">
+                Add
+              </button>
+              <button className="grow btn rounded-none btn-secondary btn-sm">
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
