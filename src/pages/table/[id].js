@@ -196,110 +196,50 @@ function PlaceOrder() {
   const setCategory = (category, subCategory) => {
     console.log({ category, subCategory });
   };
+
+  const items = [
+    { id: 1, name: "Ragatoni Arrabiata", price: 10, veg: true },
+    { id: 2, name: "Taggatelle Pollo", price: 11 },
+    { id: 3, name: "Languine Seafood", price: 15.5 },
+    { id: 4, name: "Pizza Margaritta", price: 10.5, veg: true },
+    { id: 5, name: "Pizza Hawian", price: 12.5, veg: true },
+  ];
+
   return (
     <div className="flex gap-2 flex-col">
       <ItemsFilter categories={categories} setCategory={setCategory} />
-      <div className="flex flex-wrap gap-2 justify-center">
-        <div className=" w-36 rounded shadow bg-base overflow-hidden">
-          <Image
-            className="h-32"
-            width={160}
-            height={160}
-            src="/images/1-760-Four-Cheese-Pasta-www.loavesanddishes.net_.jpg"
-            alt="Shoes"
-          />
-          <div className="flex flex-col">
-            <div className="join">
-              <button className="grow btn rounded-none btn-primary btn-sm">
-                Add
-              </button>
-              <button className="grow btn rounded-none btn-secondary btn-sm">
-                More
-              </button>
-            </div>
-            <h2 className="text-lg text-center p-2 ">Ragatoni</h2>
+      <div className="grid gap-2">
+        {items.map((item) => (
+          <div className="join w-full" key={item.id}>
+            <button
+              className={classes(
+                "join-item btn btn-outline grow flex",
+                item.veg && "border-success"
+              )}
+            >
+              <span className="grow text-left"> {item.name}</span>
+              <span>
+                {EURO_SYMBOL} {item.price}
+              </span>
+            </button>
+            <button className="join-item btn btn-info">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </button>
           </div>
-        </div>
-        <div className=" w-36 rounded shadow bg-base overflow-hidden">
-          <Image
-            className="h-32"
-            width={160}
-            height={160}
-            src="/images/7ed63c9c6146cde6ea5a4d801cd702d79792670d.jpeg"
-            alt="Shoes"
-          />
-          <div className="flex flex-col">
-            <div className="join">
-              <button className="grow btn rounded-none btn-primary btn-sm">
-                Add
-              </button>
-              <button className="grow btn rounded-none btn-secondary btn-sm">
-                More
-              </button>
-            </div>
-            <h2 className="text-lg text-center p-2 ">Panacotta</h2>
-          </div>
-        </div>
-        <div className=" w-36 rounded shadow bg-base overflow-hidden">
-          <Image
-            className="h-32"
-            width={160}
-            height={160}
-            src="/images/abhishek-hajare-_3dTLrMwiW8-unsplash.jpg"
-            alt="Shoes"
-          />
-          <div className="flex flex-col">
-            <div className="join">
-              <button className="grow btn rounded-none btn-primary btn-sm">
-                Add
-              </button>
-              <button className="grow btn rounded-none btn-secondary btn-sm">
-                More
-              </button>
-            </div>
-            <h2 className="text-lg text-center p-2 ">Taggitalla Vegano</h2>
-          </div>
-        </div>
-        <div className=" w-36 rounded shadow bg-base overflow-hidden">
-          <Image
-            className="h-32"
-            width={160}
-            height={160}
-            src="/images/Vegetable-Kabobs-001.jpg"
-            alt="Shoes"
-          />
-          <div className="flex flex-col">
-            <div className="join">
-              <button className="grow btn rounded-none btn-primary btn-sm">
-                Add
-              </button>
-              <button className="grow btn rounded-none btn-secondary btn-sm">
-                More
-              </button>
-            </div>
-            <h2 className="text-lg text-center p-2 ">Mixed Grill</h2>
-          </div>
-        </div>
-        <div className=" w-36 rounded shadow bg-base overflow-hidden">
-          <Image
-            className="h-32"
-            width={160}
-            height={160}
-            src="/images/tonic-gin-with-fresh-cucumber-rosemarie-spicy-royalty-free-image-1586188927.jpg"
-            alt="Shoes"
-          />
-          <div className="flex flex-col">
-            <div className="join">
-              <button className="grow btn rounded-none btn-primary btn-sm">
-                Add
-              </button>
-              <button className="grow btn rounded-none btn-secondary btn-sm">
-                More
-              </button>
-            </div>
-            <h2 className="text-lg text-center p-2 ">Gin Tonic</h2>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
