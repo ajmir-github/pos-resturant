@@ -2,7 +2,7 @@ import TopNav from "@/Components/Top";
 import { EURO_SYMBOL, classes, conditionalClasses } from "@/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const ITEM_CATEGORY = {
   foods: "Foods",
@@ -38,78 +38,104 @@ const VARIARION_TYPE = {
   non: "NON",
 };
 
-function Cart() {
-  const items = [
-    {
-      id: 1,
-      type: ITEM_CATEGORY.foods,
-      name: "Pizza Margarita",
-      price: 12.5,
-      isStarter: false,
-      variations: [
-        { name: "Gluten Free", type: VARIARION_TYPE.non },
-        {
-          name: "With mushrooms",
-          type: VARIARION_TYPE.increment,
-          amount: 0.5,
-        },
-      ],
-    },
-    {
-      id: 2,
-      type: ITEM_CATEGORY.drinks,
-      name: "Mojito",
-      price: 4.5,
-      isStarter: false,
-      variations: [
-        {
-          name: "Strawberry",
-          type: VARIARION_TYPE.decrement,
-          amount: 0.5,
-        },
-      ],
-    },
-    {
-      id: 3,
-      type: ITEM_CATEGORY.desserts,
-      name: "Lava Cake",
-      price: 4.5,
-      isStarter: false,
-      variations: [],
-    },
-  ];
+const ITEMS = [
+  {
+    id: 1,
+    category: ITEM_CATEGORY.foods,
+    subCategory: "Pasta",
+    name: "Ragatoni Arrabiata",
+    price: 10,
+    veg: true,
+  },
+  {
+    id: 2,
+    category: ITEM_CATEGORY.foods,
+    subCategory: "Pasta",
+    name: "Taggatelle Pollo",
+    price: 11,
+  },
+  {
+    id: 3,
+    category: ITEM_CATEGORY.foods,
+    subCategory: "Pasta",
+    name: "Languine Seafood",
+    price: 15.5,
+  },
+  {
+    id: 4,
+    category: ITEM_CATEGORY.foods,
+    subCategory: "Pizza",
+    name: "Pizza Margaritta",
+    price: 10.5,
+    veg: true,
+  },
+  {
+    id: 5,
+    category: ITEM_CATEGORY.foods,
+    subCategory: "Pizza",
+    name: "Pizza Hawian",
+    price: 12.5,
+    veg: true,
+  },
+  {
+    id: 6,
+    category: ITEM_CATEGORY.drinks,
+    subCategory: "Cooktails",
+    name: "Pink Spritis",
+    price: 5.5,
+  },
+  {
+    id: 7,
+    category: ITEM_CATEGORY.drinks,
+    subCategory: "Soft Drinks",
+    name: "Cola Zero",
+    price: 2.5,
+  },
+];
+
+function Cart({ cartItems }) {
+  const total = useMemo(
+    () => cartItems.reduce((art, item) => art + item.price, 0),
+    [cartItems]
+  );
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col gap-1 sm:gap-2">
-        {items.map((item, index) => (
+        {cartItems.map((item, index) => (
           <button
+            key={"CartItem:" + index}
             className={classes(
               "btn h-auto btn-ghost flex text-sm",
-              conditionalClasses(item.type, {
+              conditionalClasses(item.category, {
                 [ITEM_CATEGORY.foods]: "border-l-2 border-l-primary",
                 [ITEM_CATEGORY.drinks]: "border-l-2 border-l-error",
                 [ITEM_CATEGORY.desserts]: "border-l-2 border-l-info",
               })
             )}
-            key={item.id}
           >
             <span className="">{index + 1}</span>
             <span className="grow flex flex-col lg:flex-row items-start lg:items-center md:gap-2">
               <div>{item.name}</div>
-              {item.variations.map((variation) => (
-                <div className="ml-2 text-xs text-secondary-focus">
-                  {variation.name}
-                  {variation.type !== VARIARION_TYPE.non && (
-                    <>
-                      {" ("}
-                      {variation.type === VARIARION_TYPE.increment ? "+" : "-"}
-                      {EURO_SYMBOL}
-                      {variation.amount}
-                      {")"}
-                    </>
-                  )}
-                </div>
-              ))}
+              {item.variations &&
+                item.variations.map((variation, index) => (
+                  <div
+                    className="ml-2 text-xs text-secondary-focus"
+                    key={"Variations:" + index}
+                  >
+                    {variation.name}
+                    {variation.type !== VARIARION_TYPE.non && (
+                      <>
+                        {" ("}
+                        {variation.type === VARIARION_TYPE.increment
+                          ? "+"
+                          : "-"}
+                        {EURO_SYMBOL}
+                        {variation.amount}
+                        {")"}
+                      </>
+                    )}
+                  </div>
+                ))}
             </span>
             <span>
               {EURO_SYMBOL} {item.price}
@@ -118,7 +144,7 @@ function Cart() {
         ))}
       </div>
       <div className="text-center font-bold text-lg">
-        Total: {EURO_SYMBOL} 96.3
+        Total: {EURO_SYMBOL} {total}
       </div>
       <button className="join-item btn-sm btn btn-success grow" disabled>
         Save
@@ -146,8 +172,9 @@ function ItemsFilter({ filter, setFilter }) {
     <div className="flex gap-2 flex-col">
       {/* Categories */}
       <div className="tabs font-bold">
-        {ITEM_CATEGORIES.map((category) => (
+        {ITEM_CATEGORIES.map((category, index) => (
           <button
+            key={"Categories:" + index}
             onClick={() => setFilter({ ...filter, category })}
             className={classes(
               "tab grow tab-bordered",
@@ -161,8 +188,9 @@ function ItemsFilter({ filter, setFilter }) {
       {/* SUB-Categories */}
 
       <div className="tabs tabs-boxed">
-        {ITEM_SUB_CATEGORIES[filter.category].map((subCategory) => (
+        {ITEM_SUB_CATEGORIES[filter.category].map((subCategory, index) => (
           <button
+            key={"SubCategories:" + index}
             onClick={() => setFilter({ ...filter, subCategory })}
             className={classes(
               "tab",
@@ -177,66 +205,12 @@ function ItemsFilter({ filter, setFilter }) {
   );
 }
 
-function PlaceOrder() {
+function PlaceOrder({ addToCart }) {
+  // filter the desired item and select it with the write types of varations
   const [filter, setFilter] = useState({
     category: ITEM_CATEGORY.drinks,
-    subCategory: ITEM_SUB_CATEGORIES[ITEM_CATEGORY.drinks][0],
+    subCategory: "Soft Drinks",
   });
-
-  const items = [
-    {
-      id: 1,
-      category: ITEM_CATEGORY.foods,
-      subCategory: "Pasta",
-      name: "Ragatoni Arrabiata",
-      price: 10,
-      veg: true,
-    },
-    {
-      id: 2,
-      category: ITEM_CATEGORY.foods,
-      subCategory: "Pasta",
-      name: "Taggatelle Pollo",
-      price: 11,
-    },
-    {
-      id: 3,
-      category: ITEM_CATEGORY.foods,
-      subCategory: "Pasta",
-      name: "Languine Seafood",
-      price: 15.5,
-    },
-    {
-      id: 4,
-      category: ITEM_CATEGORY.foods,
-      subCategory: "Pizza",
-      name: "Pizza Margaritta",
-      price: 10.5,
-      veg: true,
-    },
-    {
-      id: 5,
-      category: ITEM_CATEGORY.foods,
-      subCategory: "Pizza",
-      name: "Pizza Hawian",
-      price: 12.5,
-      veg: true,
-    },
-    {
-      id: 6,
-      category: ITEM_CATEGORY.drinks,
-      subCategory: "Cooktails",
-      name: "Pink Spritis",
-      price: 5.5,
-    },
-    {
-      id: 7,
-      category: ITEM_CATEGORY.drinks,
-      subCategory: "Soft Drinks",
-      name: "Cola Zero",
-      price: 2.5,
-    },
-  ];
 
   const filterFunc = (item) =>
     item.category === filter.category &&
@@ -246,9 +220,10 @@ function PlaceOrder() {
     <div className="flex gap-2 flex-col">
       <ItemsFilter filter={filter} setFilter={setFilter} />
       <div className="grid gap-2">
-        {items.filter(filterFunc).map((item) => (
-          <div className="join w-full" key={item.id}>
+        {ITEMS.filter(filterFunc).map((item, index) => (
+          <div className="join w-full" key={"ITEMS:" + index}>
             <button
+              onClick={() => addToCart(item)}
               className={classes(
                 "join-item btn btn-outline grow flex",
                 item.veg && "border-success"
@@ -284,6 +259,47 @@ function PlaceOrder() {
 
 export default function Table() {
   const router = useRouter();
+  const [cartItems, setCartItems] = useState([
+    {
+      id: 1,
+      category: ITEM_CATEGORY.foods,
+      name: "Pizza Margarita",
+      price: 12.5,
+      isStarter: false,
+      variations: [
+        { name: "Gluten Free", type: VARIARION_TYPE.non },
+        {
+          name: "With mushrooms",
+          type: VARIARION_TYPE.increment,
+          amount: 0.5,
+        },
+      ],
+    },
+    {
+      id: 2,
+      category: ITEM_CATEGORY.drinks,
+      name: "Mojito",
+      price: 4.5,
+      isStarter: false,
+      variations: [
+        {
+          name: "Strawberry",
+          type: VARIARION_TYPE.decrement,
+          amount: 0.5,
+        },
+      ],
+    },
+    {
+      id: 3,
+      category: ITEM_CATEGORY.desserts,
+      name: "Lava Cake",
+      price: 4.5,
+      isStarter: false,
+      variations: [],
+    },
+  ]);
+
+  const addToCart = (item) => setCartItems([...cartItems, item]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2">
@@ -293,11 +309,11 @@ export default function Table() {
         </TopNav>
 
         <TableActions />
-        <Cart />
+        <Cart cartItems={cartItems} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <PlaceOrder />
+        <PlaceOrder addToCart={addToCart} />
       </div>
     </div>
   );
