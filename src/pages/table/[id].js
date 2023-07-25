@@ -32,10 +32,15 @@ const ITEM_SUB_CATEGORIES = {
   [ITEM_CATEGORY.desserts]: ["Hot desserts", "Cold desserts"],
 };
 
-const VARIARION_TYPE = {
-  increment: "INCREMENT",
-  decrement: "DECREMENT",
+const VARIARION_TO_PRICE = {
+  add: "ADD",
+  substruct: "SUBTRACT",
   non: "NON",
+};
+
+const VARIARION_TYPE = {
+  checkbox: "checkbox",
+  select: "select",
 };
 
 const ITEMS = [
@@ -46,6 +51,21 @@ const ITEMS = [
     name: "Ragatoni Arrabiata",
     price: 10,
     veg: true,
+    variations: [
+      {
+        name: "Gluten Free",
+        type: VARIARION_TYPE.checkbox,
+        toPrice: VARIARION_TO_PRICE.add,
+        amount: 1,
+        default: false,
+      },
+      {
+        name: "Meat to be coocked?",
+        type: VARIARION_TYPE.select,
+        options: ["R", "MR", "M", "MW", "WD"],
+        toPrice: VARIARION_TO_PRICE.non,
+      },
+    ],
   },
   {
     id: 2,
@@ -68,6 +88,14 @@ const ITEMS = [
     name: "Pizza Margaritta",
     price: 10.5,
     veg: true,
+    variations: [
+      {
+        name: "With mushrooms",
+        type: VARIARION_TYPE.checkbox,
+        toPrice: VARIARION_TO_PRICE.add,
+        amount: 0.5,
+      },
+    ],
   },
   {
     id: 5,
@@ -116,26 +144,6 @@ function Cart({ cartItems }) {
             <span className="">{index + 1}</span>
             <span className="grow flex flex-col lg:flex-row items-start lg:items-center md:gap-2">
               <div>{item.name}</div>
-              {item.variations &&
-                item.variations.map((variation, index) => (
-                  <div
-                    className="ml-2 text-xs text-secondary-focus"
-                    key={"Variations:" + index}
-                  >
-                    {variation.name}
-                    {variation.type !== VARIARION_TYPE.non && (
-                      <>
-                        {" ("}
-                        {variation.type === VARIARION_TYPE.increment
-                          ? "+"
-                          : "-"}
-                        {EURO_SYMBOL}
-                        {variation.amount}
-                        {")"}
-                      </>
-                    )}
-                  </div>
-                ))}
             </span>
             <span>
               {EURO_SYMBOL} {item.price}
@@ -221,36 +229,124 @@ function PlaceOrder({ addToCart }) {
       <ItemsFilter filter={filter} setFilter={setFilter} />
       <div className="grid gap-2">
         {ITEMS.filter(filterFunc).map((item, index) => (
-          <div className="join w-full" key={"ITEMS:" + index}>
-            <button
-              onClick={() => addToCart(item)}
-              className={classes(
-                "join-item btn btn-outline grow flex",
-                item.veg && "border-success"
-              )}
-            >
-              <span className="grow text-left"> {item.name}</span>
-              <span>
-                {EURO_SYMBOL} {item.price}
-              </span>
-            </button>
-            <button className="join-item btn btn-info">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
+          <>
+            <div className="join w-full" key={"ITEMS:" + index}>
+              <button
+                onClick={() => addToCart(item)}
+                className={classes(
+                  "join-item btn btn-outline grow flex",
+                  item.veg && "border-success"
+                )}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </button>
-          </div>
+                <span className="grow text-left"> {item.name}</span>
+                <span>
+                  {EURO_SYMBOL} {item.price}
+                </span>
+              </button>
+              <button
+                className="join-item btn btn-info"
+                onClick={() => window["ITEM_MODAL:" + index].showModal()}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <dialog id={"ITEM_MODAL:" + index} className="modal">
+              <div method="dialog" className="modal-box">
+                <h3 className="font-bold text-lg">More on {item.name}</h3>
+                <div className="py-4">
+                  {/* as a starter */}
+                  {item.category === ITEM_CATEGORY.foods && (
+                    <div className="form-control">
+                      <label className="label cursor-pointer">
+                        <span className="label-text">As a starter</span>
+                        <input
+                          type="checkbox"
+                          defaultValue={false}
+                          className="checkbox"
+                        />
+                      </label>
+                    </div>
+                  )}
+                  {/* Other item related variations */}
+                  {item.variations &&
+                    item.variations.map((variation) => {
+                      switch (variation.type) {
+                        case VARIARION_TYPE.checkbox:
+                          return (
+                            <div className="form-control">
+                              <label className="label cursor-pointer">
+                                <span className="label-text">
+                                  {variation.name}
+                                </span>
+                                <input
+                                  type="checkbox"
+                                  defaultValue={variation.default}
+                                  className="checkbox"
+                                />
+                              </label>
+                            </div>
+                          );
+
+                        case VARIARION_TYPE.select:
+                          return (
+                            <div className="form-control w-full">
+                              <label className="label">
+                                <span className="label-text">
+                                  {variation.name}
+                                </span>
+                              </label>
+                              <select className="select select-bordered">
+                                <option disabled selected>
+                                  Pick one
+                                </option>
+                                {variation.options.map((option) => (
+                                  <option>{option}</option>
+                                ))}
+                              </select>
+                            </div>
+                          );
+                        default:
+                          return "IDK";
+                      }
+                    })}
+
+                  {/* Change the price */}
+                  <div className="form-control w-full">
+                    <label className="label">
+                      <span className="label-text">Set a new price</span>
+                    </label>
+                    <input
+                      type="number"
+                      defaultValue={item.price}
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                </div>
+                <div className="modal-action">
+                  <button
+                    className="btn"
+                    onClick={() => window["ITEM_MODAL:" + index].close()}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </dialog>
+          </>
         ))}
       </div>
     </div>
