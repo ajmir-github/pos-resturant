@@ -4,10 +4,32 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const ITEM_TYPE = {
-  food: "FOOD",
-  drink: "DRINK",
-  dessert: "DESSERT",
+const ITEM_CATEGORY = {
+  foods: "Foods",
+  drinks: "Drinks",
+  desserts: "Desserts",
+};
+
+const ITEM_CATEGORIES = ["Foods", "Drinks", "Desserts"];
+const ITEM_SUB_CATEGORIES = {
+  [ITEM_CATEGORY.drinks]: [
+    "Apperitives",
+    "Coffee",
+    "Cooktails",
+    "Soft Drinks",
+    "Red Wines",
+    "White Wines",
+    "Rose Wines",
+  ],
+  [ITEM_CATEGORY.foods]: [
+    "Starters",
+    "Pizza",
+    "Side Dishes",
+    "Pasta",
+    "Steaks",
+    "Salads",
+  ],
+  [ITEM_CATEGORY.desserts]: ["Hot desserts", "Cold desserts"],
 };
 
 const VARIARION_TYPE = {
@@ -20,7 +42,7 @@ function Cart() {
   const items = [
     {
       id: 1,
-      type: ITEM_TYPE.food,
+      type: ITEM_CATEGORY.foods,
       name: "Pizza Margarita",
       price: 12.5,
       isStarter: false,
@@ -35,7 +57,7 @@ function Cart() {
     },
     {
       id: 2,
-      type: ITEM_TYPE.drink,
+      type: ITEM_CATEGORY.drinks,
       name: "Mojito",
       price: 4.5,
       isStarter: false,
@@ -49,7 +71,7 @@ function Cart() {
     },
     {
       id: 3,
-      type: ITEM_TYPE.dessert,
+      type: ITEM_CATEGORY.desserts,
       name: "Lava Cake",
       price: 4.5,
       isStarter: false,
@@ -64,9 +86,9 @@ function Cart() {
             className={classes(
               "btn h-auto btn-ghost flex text-sm",
               conditionalClasses(item.type, {
-                [ITEM_TYPE.food]: "border-l-2 border-l-primary",
-                [ITEM_TYPE.drink]: "border-l-2 border-l-error",
-                [ITEM_TYPE.dessert]: "border-l-2 border-l-info",
+                [ITEM_CATEGORY.foods]: "border-l-2 border-l-primary",
+                [ITEM_CATEGORY.drinks]: "border-l-2 border-l-error",
+                [ITEM_CATEGORY.desserts]: "border-l-2 border-l-info",
               })
             )}
             key={item.id}
@@ -119,40 +141,32 @@ function TableActions() {
   );
 }
 
-function ItemsFilter({ categories, setCategory }) {
-  const [filterCategory, setFilterCategory] = useState(0);
-  const [filterSubCategory, setFilterSubCategory] = useState(0);
-
-  useEffect(() => {
-    const { name, subCategories } = categories[filterCategory];
-    setCategory(name, subCategories[filterSubCategory]);
-  }, [filterCategory, filterSubCategory]);
-
+function ItemsFilter({ filter, setFilter }) {
   return (
     <div className="flex gap-2 flex-col">
       {/* Categories */}
       <div className="tabs font-bold">
-        {categories.map((category, index) => (
+        {ITEM_CATEGORIES.map((category) => (
           <button
-            onClick={() => setFilterCategory(index)}
+            onClick={() => setFilter({ ...filter, category })}
             className={classes(
               "tab grow tab-bordered",
-              filterCategory === index && "tab-active"
+              filter.category === category && "tab-active"
             )}
           >
-            {category.name}
+            {category}
           </button>
         ))}
       </div>
       {/* SUB-Categories */}
 
       <div className="tabs tabs-boxed">
-        {categories[filterCategory].subCategories.map((subCategory, index) => (
+        {ITEM_SUB_CATEGORIES[filter.category].map((subCategory) => (
           <button
-            onClick={() => setFilterSubCategory(index)}
+            onClick={() => setFilter({ ...filter, subCategory })}
             className={classes(
               "tab",
-              filterSubCategory === index && "tab-active"
+              filter.subCategory === subCategory && "tab-active"
             )}
           >
             {subCategory}
@@ -164,52 +178,75 @@ function ItemsFilter({ categories, setCategory }) {
 }
 
 function PlaceOrder() {
-  const categories = [
-    {
-      name: "Drinks",
-      subCategories: [
-        "Apperitives",
-        "Coffee",
-        "Cooktails",
-        "Soft Drinks",
-        "Red Wines",
-        "White Wines",
-        "Rose Wines",
-      ],
-    },
-    {
-      name: "Foods",
-      subCategories: [
-        "Starters",
-        "Pizza",
-        "Side Dishes",
-        "Pasta",
-        "Steaks",
-        "Salads",
-      ],
-    },
-    {
-      name: "Desserts",
-      subCategories: ["Hot desserts", "Cold desserts"],
-    },
-  ];
-  const setCategory = (category, subCategory) => {
-    console.log({ category, subCategory });
-  };
+  const [filter, setFilter] = useState({
+    category: ITEM_CATEGORY.drinks,
+    subCategory: ITEM_SUB_CATEGORIES[ITEM_CATEGORY.drinks][0],
+  });
 
   const items = [
-    { id: 1, name: "Ragatoni Arrabiata", price: 10, veg: true },
-    { id: 2, name: "Taggatelle Pollo", price: 11 },
-    { id: 3, name: "Languine Seafood", price: 15.5 },
-    { id: 4, name: "Pizza Margaritta", price: 10.5, veg: true },
-    { id: 5, name: "Pizza Hawian", price: 12.5, veg: true },
+    {
+      id: 1,
+      category: ITEM_CATEGORY.foods,
+      subCategory: "Pasta",
+      name: "Ragatoni Arrabiata",
+      price: 10,
+      veg: true,
+    },
+    {
+      id: 2,
+      category: ITEM_CATEGORY.foods,
+      subCategory: "Pasta",
+      name: "Taggatelle Pollo",
+      price: 11,
+    },
+    {
+      id: 3,
+      category: ITEM_CATEGORY.foods,
+      subCategory: "Pasta",
+      name: "Languine Seafood",
+      price: 15.5,
+    },
+    {
+      id: 4,
+      category: ITEM_CATEGORY.foods,
+      subCategory: "Pizza",
+      name: "Pizza Margaritta",
+      price: 10.5,
+      veg: true,
+    },
+    {
+      id: 5,
+      category: ITEM_CATEGORY.foods,
+      subCategory: "Pizza",
+      name: "Pizza Hawian",
+      price: 12.5,
+      veg: true,
+    },
+    {
+      id: 6,
+      category: ITEM_CATEGORY.drinks,
+      subCategory: "Cooktails",
+      name: "Pink Spritis",
+      price: 5.5,
+    },
+    {
+      id: 7,
+      category: ITEM_CATEGORY.drinks,
+      subCategory: "Soft Drinks",
+      name: "Cola Zero",
+      price: 2.5,
+    },
   ];
+
+  const filterFunc = (item) =>
+    item.category === filter.category &&
+    item.subCategory === filter.subCategory;
 
   return (
     <div className="flex gap-2 flex-col">
-      <ItemsFilter categories={categories} setCategory={setCategory} />
+      <ItemsFilter filter={filter} setFilter={setFilter} />
       <div className="grid gap-2">
-        {items.map((item) => (
+        {items.filter(filterFunc).map((item) => (
           <div className="join w-full" key={item.id}>
             <button
               className={classes(
