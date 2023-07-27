@@ -6,6 +6,8 @@ import {
 } from "@/utils";
 
 export function ItemComponent({ item, onItemButton, onMoreButton }) {
+  const count = item.count || 1;
+  const multiple = count > 1;
   return (
     <div
       className={classes(
@@ -22,10 +24,24 @@ export function ItemComponent({ item, onItemButton, onMoreButton }) {
         onClick={onItemButton}
         className={classes("join-item btn  grow flex btn-sm")}
       >
-        <span className="grow text-left">{item.name}</span>
-        <span className="flex gap-2 items-center">
-          {EURO_SYMBOL} {item.price}
+        <span className="grow text-left">
+          {multiple && count + "x"} {item.name}
         </span>
+
+        {multiple ? (
+          <span className="flex  items-center gap-4">
+            <span>
+              Per: {EURO_SYMBOL} {item.price}
+            </span>
+            <span>
+              {EURO_SYMBOL} {item.price * count}
+            </span>
+          </span>
+        ) : (
+          <span className="flex gap-2 items-center">
+            {EURO_SYMBOL} {item.price * count}
+          </span>
+        )}
       </button>
       <button className="join-item btn  btn-sm" onClick={onMoreButton}>
         <svg

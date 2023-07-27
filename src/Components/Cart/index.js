@@ -121,6 +121,22 @@ export default function Cart({ cartItems }) {
     () => cartItems.reduce((art, item) => art + item.price, 0),
     [cartItems]
   );
+  const is = {
+    starter: (item) => item.starter && item.category === ITEM_CATEGORY.foods,
+    main: (item) => !item.starter && item.category === ITEM_CATEGORY.foods,
+    drink: (item) => item.category === ITEM_CATEGORY.drinks,
+    dessert: (item) => item.category === ITEM_CATEGORY.desserts,
+  };
+
+  const has = useMemo(
+    () => ({
+      starters: cartItems.some(is.starter),
+      mains: cartItems.some(is.main),
+      drinks: cartItems.some(is.drink),
+      desserts: cartItems.some(is.dessert),
+    }),
+    [cartItems]
+  );
   return (
     <div className="flex flex-col gap-2">
       <div className="join">
@@ -132,26 +148,103 @@ export default function Cart({ cartItems }) {
         </button>
         <button className="join-item btn-sm btn btn-error grow">Invoice</button>
       </div>
-      <div className="flex flex-col gap-1 sm:gap-2">
-        {cartItems.map((item, index) => {
-          const id = "CART_ITEM:" + item.id + "+INDEX" + index;
-          return (
-            <div key={id}>
-              <ItemComponent
-                item={item}
-                onItemButton={() => alert("Wait")}
-                onMoreButton={() => window[id].showModal()}
-              />
-              <dialog id={id} className="modal">
-                <ItemSettings
+      {/* Starters */}
+      {has.starters && (
+        <div className="flex flex-col gap-1 sm:gap-2">
+          <div className="text-lg text-center">Starters</div>
+          {cartItems.filter(is.starter).map((item, index) => {
+            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
+            return (
+              <div key={id}>
+                <ItemComponent
                   item={item}
-                  closeModal={() => window[id].close()}
+                  onItemButton={() => alert("Wait")}
+                  onMoreButton={() => window[id].showModal()}
                 />
-              </dialog>
-            </div>
-          );
-        })}
-      </div>
+                <dialog id={id} className="modal">
+                  <ItemSettings
+                    item={item}
+                    closeModal={() => window[id].close()}
+                  />
+                </dialog>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Mains */}
+      {has.mains && (
+        <div className="flex flex-col gap-1 sm:gap-2">
+          <div className="text-lg text-center">Mains</div>
+          {cartItems.filter(is.main).map((item, index) => {
+            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
+            return (
+              <div key={id}>
+                <ItemComponent
+                  item={item}
+                  onItemButton={() => alert("Wait")}
+                  onMoreButton={() => window[id].showModal()}
+                />
+                <dialog id={id} className="modal">
+                  <ItemSettings
+                    item={item}
+                    closeModal={() => window[id].close()}
+                  />
+                </dialog>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {/* Mains */}
+      {has.desserts && (
+        <div className="flex flex-col gap-1 sm:gap-2">
+          <div className="text-lg text-center">Desserts</div>
+          {cartItems.filter(is.dessert).map((item, index) => {
+            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
+            return (
+              <div key={id}>
+                <ItemComponent
+                  item={item}
+                  onItemButton={() => alert("Wait")}
+                  onMoreButton={() => window[id].showModal()}
+                />
+                <dialog id={id} className="modal">
+                  <ItemSettings
+                    item={item}
+                    closeModal={() => window[id].close()}
+                  />
+                </dialog>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {/* Mains */}
+      {has.drinks && (
+        <div className="flex flex-col gap-1 sm:gap-2">
+          <div className="text-lg text-center">Drinks</div>
+          {cartItems.filter(is.drink).map((item, index) => {
+            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
+            return (
+              <div key={id}>
+                <ItemComponent
+                  item={item}
+                  onItemButton={() => alert("Wait")}
+                  onMoreButton={() => window[id].showModal()}
+                />
+                <dialog id={id} className="modal">
+                  <ItemSettings
+                    item={item}
+                    closeModal={() => window[id].close()}
+                  />
+                </dialog>
+              </div>
+            );
+          })}
+        </div>
+      )}
       <div className="text-center font-bold text-lg">
         Total: {EURO_SYMBOL} {total}
       </div>

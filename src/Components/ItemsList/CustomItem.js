@@ -15,32 +15,55 @@ import {
 } from "@/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ItemsFilterer from "./ItemsFilterer";
 import { ItemComponent } from "../ItemComponent";
 
 export default function CustomItem({ addToCart, item, closeModal }) {
   const [vars, setVars] = useState([]);
-
+  const formRef = useRef(null);
+  const closeAndResetModal = () => {
+    formRef.current.reset();
+    closeModal();
+  };
   const addToCartWithVariations = () => {
-    return console.log(vars);
-
-    // closeModal();
-    let newProps = {};
-    vars.forEach(({ type, value, property, amount }) => {
-      console.log(type);
+    closeAndResetModal();
+    let customItem = { ...item };
+    const addToVariant = (v) => {
+      customItem.variant = customItem.variant
+        ? [...customItem.variant, v]
+        : [v];
+    };
+    vars.forEach(({ name, type, value, property, amount, component }) => {
       switch (type) {
         case VARIARION_TYPE.changeCount:
-          newProps.count = value;
+          customItem.count = value;
           break;
+
         case VARIARION_TYPE.changePrice:
-          newProps.price = value;
-        default:
+          customItem.price = value;
+          break;
+
+        case VARIARION_TYPE.substructFromPrice:
+          customItem.price -= amount;
+          break;
+
+        case VARIARION_TYPE.addToPrice:
+          customItem.price += amount;
+          break;
+
+        case VARIARION_TYPE.addProperty:
+          customItem = { ...customItem, ...property };
           break;
       }
+
+      if (component === VARIARION_COMPONENT.checkbox) {
+        addToVariant(name);
+      } else if (component === VARIARION_COMPONENT.select) {
+        addToVariant(value);
+      }
     });
-    console.log(newProps);
-    // addToCart({ ...item, passedVariations: vars });
+    addToCart({ ...customItem, passedVariations: vars });
   };
 
   const excludeVar = (name) => setVars(vars.filter((v) => v.name !== name));
@@ -63,7 +86,7 @@ export default function CustomItem({ addToCart, item, closeModal }) {
   };
 
   return (
-    <div method="dialog" className="modal-box">
+    <form method="dialog" className="modal-box" ref={formRef}>
       <h3 className="font-bold text-lg">{item.name}</h3>
       <div className="py-4">
         {getMustHaveVariations(item).map((variation, index) => {
@@ -80,11 +103,10 @@ export default function CustomItem({ addToCart, item, closeModal }) {
                       type="checkbox"
                       defaultValue={variation.default}
                       onChange={(e) =>
-                        onInputChange(
-                          variation.name,
-                          e.target.checked,
-                          variation.default
-                        )
+                        onInputChange({
+                          ...variation,
+                          value: e.target.checked,
+                        })
                       }
                       className="checkbox"
                     />
@@ -105,11 +127,10 @@ export default function CustomItem({ addToCart, item, closeModal }) {
                     className="select select-bordered"
                     defaultValue={variation.default}
                     onChange={(e) =>
-                      onInputChange(
-                        variation.name,
-                        e.target.value,
-                        variation.default
-                      )
+                      onInputChange({
+                        ...variation,
+                        value: e.target.value,
+                      })
                     }
                   >
                     {variation.options.map((option, index) => (
@@ -174,13 +195,17 @@ export default function CustomItem({ addToCart, item, closeModal }) {
         })}
       </div>
       <div className="modal-action">
-        <button className="btn btn-primary" onClick={addToCartWithVariations}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={addToCartWithVariations}
+        >
           Add
         </button>
-        <button className="btn" onClick={closeModal}>
+        <button type="button" className="btn" onClick={closeAndResetModal}>
           Close
         </button>
       </div>
-    </div>
+    </form>
   );
 }
