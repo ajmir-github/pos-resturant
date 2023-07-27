@@ -22,10 +22,20 @@ export function ItemComponent({ item, onItemButton, onMoreButton }) {
     >
       <button
         onClick={onItemButton}
-        className={classes("join-item btn  grow flex btn-sm")}
+        className={classes(
+          "join-item btn h-auto items-center grow flex btn-sm p-2"
+        )}
       >
         <span className="grow text-left">
-          {multiple && count + "x"} {item.name}
+          <div>
+            {multiple && count + "x"} {item.name}
+          </div>
+          <div className="flex flex-col text-sm ml-2">
+            {item.variant &&
+              item.variant.map((variant, index) => (
+                <span key={index}>{variant}</span>
+              ))}
+          </div>
         </span>
 
         {multiple ? (
@@ -43,7 +53,7 @@ export function ItemComponent({ item, onItemButton, onMoreButton }) {
           </span>
         )}
       </button>
-      <button className="join-item btn  btn-sm" onClick={onMoreButton}>
+      <button className="join-item btn h-auto  btn-sm" onClick={onMoreButton}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
