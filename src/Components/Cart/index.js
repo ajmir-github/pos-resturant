@@ -116,7 +116,7 @@ function ItemSettings({ item, closeModal }) {
   );
 }
 
-export default function Cart({ cartItems }) {
+export default function Cart({ cartItems, removeFromCart }) {
   const total = useMemo(
     () => cartItems.reduce((art, item) => art + item.price, 0),
     [cartItems]
@@ -137,6 +137,28 @@ export default function Cart({ cartItems }) {
     }),
     [cartItems]
   );
+
+  const Category = ({ title, items }) => (
+    <div className="flex flex-col gap-1 sm:gap-2">
+      <div className="text-lg text-center">{title}</div>
+      {items.map((item, index) => {
+        const id = "CART_ITEM:" + item.id + "+INDEX" + index;
+        return (
+          <div key={id}>
+            <ItemComponent
+              item={item}
+              onDelete={removeFromCart}
+              onItemButton={() => window[id].showModal()}
+            />
+            <dialog id={id} className="modal">
+              <ItemSettings item={item} closeModal={() => window[id].close()} />
+            </dialog>
+          </div>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-2">
       <div className="join">
@@ -150,100 +172,20 @@ export default function Cart({ cartItems }) {
       </div>
       {/* Starters */}
       {has.starters && (
-        <div className="flex flex-col gap-1 sm:gap-2">
-          <div className="text-lg text-center">Starters</div>
-          {cartItems.filter(is.starter).map((item, index) => {
-            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
-            return (
-              <div key={id}>
-                <ItemComponent
-                  item={item}
-                  onItemButton={() => alert("Wait")}
-                  onMoreButton={() => window[id].showModal()}
-                />
-                <dialog id={id} className="modal">
-                  <ItemSettings
-                    item={item}
-                    closeModal={() => window[id].close()}
-                  />
-                </dialog>
-              </div>
-            );
-          })}
-        </div>
+        <Category title={"Starter"} items={cartItems.filter(is.starter)} />
       )}
 
       {/* Mains */}
       {has.mains && (
-        <div className="flex flex-col gap-1 sm:gap-2">
-          <div className="text-lg text-center">Mains</div>
-          {cartItems.filter(is.main).map((item, index) => {
-            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
-            return (
-              <div key={id}>
-                <ItemComponent
-                  item={item}
-                  onItemButton={() => alert("Wait")}
-                  onMoreButton={() => window[id].showModal()}
-                />
-                <dialog id={id} className="modal">
-                  <ItemSettings
-                    item={item}
-                    closeModal={() => window[id].close()}
-                  />
-                </dialog>
-              </div>
-            );
-          })}
-        </div>
+        <Category title={"Mains"} items={cartItems.filter(is.main)} />
       )}
       {/* Mains */}
       {has.desserts && (
-        <div className="flex flex-col gap-1 sm:gap-2">
-          <div className="text-lg text-center">Desserts</div>
-          {cartItems.filter(is.dessert).map((item, index) => {
-            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
-            return (
-              <div key={id}>
-                <ItemComponent
-                  item={item}
-                  onItemButton={() => alert("Wait")}
-                  onMoreButton={() => window[id].showModal()}
-                />
-                <dialog id={id} className="modal">
-                  <ItemSettings
-                    item={item}
-                    closeModal={() => window[id].close()}
-                  />
-                </dialog>
-              </div>
-            );
-          })}
-        </div>
+        <Category title={"Desserts"} items={cartItems.filter(is.dessert)} />
       )}
-      {/* Mains */}
+      {/* Drinks */}
       {has.drinks && (
-        <div className="flex flex-col gap-1 sm:gap-2">
-          <div className="text-lg text-center">Drinks</div>
-          {cartItems.filter(is.drink).map((item, index) => {
-            const id = "CART_ITEM:" + item.id + "+INDEX" + index;
-            return (
-              <div key={id}>
-                <ItemComponent
-                  item={item}
-                  onItemButton={() => alert("Wait")}
-                  onMoreButton={() => window[id].showModal()}
-                />
-                <dialog id={id} className="modal">
-                  <ItemSettings
-                    item={item}
-                    closeModal={() => window[id].close()}
-                  />
-                </dialog>
-              </div>
-            );
-          })}
-        </div>
+        <Category title={"Drinks"} items={cartItems.filter(is.drink)} />
       )}
       <div className="text-center font-bold text-lg">
         Total: {EURO_SYMBOL} {total}

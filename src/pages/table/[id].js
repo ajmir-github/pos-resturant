@@ -8,7 +8,11 @@ export default function Table() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (item) => setCartItems([...cartItems, item]);
+  const addToCart = (item) =>
+    setCartItems([...cartItems, { ...item, id: Number(new Date()) }]);
+
+  const removeFromCart = (itemId) =>
+    setCartItems(cartItems.filter((item) => item.id !== itemId));
 
   return (
     <div className="flex flex-col gap-2">
@@ -17,7 +21,7 @@ export default function Table() {
       </TopNav>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2">
-        <Cart cartItems={cartItems} />
+        <Cart cartItems={cartItems} removeFromCart={removeFromCart} />
         <ItemsList addToCart={addToCart} />
       </div>
     </div>
