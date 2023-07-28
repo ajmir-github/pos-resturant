@@ -16,23 +16,28 @@ export default function Tables({ tables, selectTable }) {
   );
 
   return (
-    <div className="flex flex-col gap-2 sm:gap-4 p-2 sm:p-4">
-      <TopNav backHref={"/"} className="flex gap-2 px-2 justify-end">
-        <span>
-          <spans className="stat-title text-sm">Tables</spans>{" "}
-          <spans className="stat-value text-lg">{stats.tables}</spans>
-        </span>
-        <span>
-          <span className="stat-title text-sm">Customers</span>{" "}
-          <span className="stat-value text-lg"> {stats.customers}</span>
-        </span>
-      </TopNav>
+    <div className="flex flex-col">
+      <Link className="flex items-center p-1 sm:p-2" href={"/"}>
+        <div className="grow font-mono flex items-center">
+          <span className="grow gap-2 sm:gap-4 flex ">
+            <span className="flex sm:gap-2 flex-col sm:flex-row">
+              <span>9:45PM</span>
+              <span>21 FEB 2023</span>
+            </span>
+            <span className="flex sm:gap-2 flex-col sm:flex-row">
+              <span>Tables:{stats.tables}</span>
+              <span>Customers:{stats.customers}</span>
+            </span>
+          </span>
+          <span>Ajmir Raziqi</span>
+        </div>
+      </Link>
       <div className="flex gap-1 sm:gap-2 flex-wrap justify-center">
         {tables.map((table) => (
           <Link
             href={`/table/${table.id}`}
             className={classes(
-              "btn h-16 sm:h-18 md:h-20 w-16 sm:w-18 md:w-20 text-xl sm:text-2xl md:text-3xl relative",
+              "btn h-20 sm:h-24  w-20 sm:w-24 text-2xl sm:text-4xl relative rounded-none",
               conditionalClasses(table.status, {
                 [TABLE_STATUS.close]: "btn-outline",
                 [TABLE_STATUS.open]: "btn-primary",
@@ -46,12 +51,12 @@ export default function Tables({ tables, selectTable }) {
           >
             {table.tableNumber}
             {table.hasStarter && (
-              <span className="text-[8px] absolute top-0 left-2">Starter</span>
+              <span className="text-xs  absolute bottom-0 left-2">Starter</span>
             )}
-            <span className="text-[8px] absolute bottom-0 left-2">
+            <span className="text-xs  absolute top-0 left-2">
               {table.status}
             </span>
-            <span className="text-[8px] absolute bottom-0 right-2">
+            <span className="text-xs  absolute bottom-0 right-2">
               {table.customers}
             </span>
           </Link>
