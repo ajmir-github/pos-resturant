@@ -20,7 +20,8 @@ import ItemsFilterer from "./ItemsFilterer";
 import { ItemComponent } from "../ItemComponent";
 
 export default function CustomItem({ addToCart, item, closeModal }) {
-  const [vars, setVars] = useState([]);
+  const itemVariations = getMustHaveVariations(item);
+  const [variations, setVariations] = useState([]);
   const formRef = useRef(null);
   const closeAndResetModal = () => {
     formRef.current.reset();
@@ -28,68 +29,27 @@ export default function CustomItem({ addToCart, item, closeModal }) {
   };
   const addToCartWithVariations = () => {
     closeAndResetModal();
-    let customItem = { ...item };
-    const addToVariant = (v) => {
-      customItem.variant = customItem.variant
-        ? [...customItem.variant, v]
-        : [v];
-    };
-    vars.forEach(({ name, type, value, property, amount, component }) => {
-      switch (type) {
-        case VARIARION_TYPE.changeCount:
-          customItem.count = value;
-          break;
-
-        case VARIARION_TYPE.changePrice:
-          customItem.price = value;
-          break;
-
-        case VARIARION_TYPE.substructFromPrice:
-          customItem.price -= amount;
-          break;
-
-        case VARIARION_TYPE.addToPrice:
-          customItem.price += amount;
-          break;
-
-        case VARIARION_TYPE.addProperty:
-          customItem = { ...customItem, ...property };
-          break;
-      }
-
-      if (component === VARIARION_COMPONENT.checkbox) {
-        addToVariant(name);
-      } else if (component === VARIARION_COMPONENT.select) {
-        addToVariant(value);
-      }
+    addToCart({
+      ...item,
+      variations: itemVariations,
+      modifications: variations.filter((v) => v.value !== v.defaultValue),
     });
-    addToCart({ ...customItem, passedVariations: vars });
   };
 
-  const excludeVar = (name) => setVars(vars.filter((v) => v.name !== name));
-  const varsHas = (name) => vars.some((v) => v.name === name);
-  const addVar = (newVar) => setVars([...vars, newVar]);
-
   const onInputChange = (variation) => {
-    // exclude it from vars
-    if (variation.value === variation.default)
-      return excludeVar(variation.name);
-    // updated the added var
-    if (varsHas(variation.name))
-      return setVars(
-        vars.map((v) =>
-          v.name !== variation.name ? v : { ...v, value: variation.value }
-        )
-      );
-    // add it for the first time in the vars
-    addVar(variation);
+    const match = (v) => v.name === variation.name;
+    // if not exists push it
+    if (!variations.some(match))
+      return setVariations([...variations, variation]);
+    // update
+    setVariations(variations.map((v) => (match(v) ? variation : v)));
   };
 
   return (
     <form method="dialog" className="modal-box" ref={formRef}>
       <h3 className="font-bold text-lg">{item.name}</h3>
       <div className="py-4">
-        {getMustHaveVariations(item).map((variation, index) => {
+        {itemVariations.map((variation, index) => {
           switch (variation.component) {
             case VARIARION_COMPONENT.checkbox:
               return (
@@ -101,7 +61,7 @@ export default function CustomItem({ addToCart, item, closeModal }) {
                     <span className="label-text">{variation.name}</span>
                     <input
                       type="checkbox"
-                      defaultValue={variation.default}
+                      defaultValue={variation.defaultValue}
                       onChange={(e) =>
                         onInputChange({
                           ...variation,
@@ -125,7 +85,7 @@ export default function CustomItem({ addToCart, item, closeModal }) {
                   </label>
                   <select
                     className="select select-bordered"
-                    defaultValue={variation.default}
+                    defaultValue={variation.defaultValue}
                     onChange={(e) =>
                       onInputChange({
                         ...variation,
@@ -155,7 +115,7 @@ export default function CustomItem({ addToCart, item, closeModal }) {
                   <input
                     type="number"
                     min={1}
-                    defaultValue={variation.default}
+                    defaultValue={variation.defaultValue}
                     onChange={(e) =>
                       onInputChange({
                         ...variation,
@@ -178,7 +138,7 @@ export default function CustomItem({ addToCart, item, closeModal }) {
                   <input
                     type="number"
                     min={1}
-                    defaultValue={variation.default}
+                    defaultValue={variation.defaultValue}
                     onChange={(e) =>
                       onInputChange({
                         ...variation,

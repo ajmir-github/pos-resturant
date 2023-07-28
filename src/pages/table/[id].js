@@ -1,6 +1,7 @@
 import Cart from "@/Components/Cart";
 import ItemsList from "@/Components/ItemsList";
 import TopNav from "@/Components/Top";
+import { generateID } from "@/utils";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -8,8 +9,11 @@ export default function Table() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (item) =>
-    setCartItems([...cartItems, { ...item, id: Number(new Date()) }]);
+  const addToCart = (item) => {
+    const id = generateID();
+    console.log({ id });
+    setCartItems([...cartItems, { ...item, id }]);
+  };
 
   const removeFromCart = (itemId) =>
     setCartItems(cartItems.filter((item) => item.id !== itemId));

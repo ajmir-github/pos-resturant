@@ -1,6 +1,14 @@
+import ShortUniqueId from "short-unique-id";
 // -------------- UTIL FUNCS
 export function classes(...cls) {
   return cls.filter(Boolean).join(" ");
+}
+
+export function generateID(length = 16) {
+  //Instantiate
+  const uid = new ShortUniqueId({ length });
+  // return uid.seq(); on a seqence
+  return uid();
 }
 
 export function conditionalClasses(condition, classes) {
@@ -66,7 +74,7 @@ export const VARIARION_TYPE = {
 
 export const ITEMS = [
   {
-    id: 1,
+    id: "itemID-1",
     category: ITEM_CATEGORY.foods,
     subCategory: "Pasta",
     name: "Ragatoni Arrabiata",
@@ -76,9 +84,7 @@ export const ITEMS = [
       {
         name: "Gluten Free",
         component: VARIARION_COMPONENT.checkbox,
-        type: VARIARION_TYPE.addToPrice,
-        amount: 1,
-        default: false,
+        defaultValue: false,
       },
       {
         name: "Meat",
@@ -90,27 +96,26 @@ export const ITEMS = [
           "Medium-to-well-Done",
           "Well-Done",
         ],
-        default: "Medium",
-        type: VARIARION_TYPE.non,
+        defaultValue: "Medium",
       },
     ],
   },
   {
-    id: 2,
+    id: "itemID-2",
     category: ITEM_CATEGORY.foods,
     subCategory: "Pasta",
     name: "Taggatelle Pollo",
     price: 11,
   },
   {
-    id: 3,
+    id: "itemID-3",
     category: ITEM_CATEGORY.foods,
     subCategory: "Pasta",
     name: "Languine Seafood",
     price: 15.5,
   },
   {
-    id: 4,
+    id: "itemID-4",
     category: ITEM_CATEGORY.foods,
     subCategory: "Pizza",
     name: "Pizza Margaritta",
@@ -120,13 +125,11 @@ export const ITEMS = [
       {
         name: "With mushrooms",
         component: VARIARION_COMPONENT.checkbox,
-        toPrice: VARIARION_TYPE.addToPrice,
-        amount: 0.5,
       },
     ],
   },
   {
-    id: 5,
+    id: "itemID-5",
     category: ITEM_CATEGORY.foods,
     subCategory: "Pizza",
     name: "Pizza Hawian",
@@ -134,14 +137,14 @@ export const ITEMS = [
     veg: true,
   },
   {
-    id: 6,
+    id: "itemID-6",
     category: ITEM_CATEGORY.drinks,
     subCategory: "Cooktails",
     name: "Pink Spritis",
     price: 5.5,
   },
   {
-    id: 7,
+    id: "itemID-7",
     category: ITEM_CATEGORY.drinks,
     subCategory: "Soft Drinks",
     name: "Cola Zero",
@@ -149,7 +152,7 @@ export const ITEMS = [
   },
 
   {
-    id: 8,
+    id: "itemID-8",
     category: ITEM_CATEGORY.drinks,
     subCategory: "Cooktails",
     name: "Mojito",
@@ -158,16 +161,13 @@ export const ITEMS = [
       {
         name: "Non-alcoholic",
         component: VARIARION_COMPONENT.checkbox,
-        default: false,
-        type: VARIARION_TYPE.substructFromPrice,
-        amount: 0.5,
+        defaultValue: false,
       },
       {
         name: "Mixer",
         component: VARIARION_COMPONENT.select,
         options: ["Classic", "Strawberry"],
-        default: "Classic",
-        type: VARIARION_TYPE.non,
+        defaultValue: "Classic",
       },
     ],
   },
@@ -185,28 +185,22 @@ export const getMustHaveVariations = ({
     vars.push({
       name: "Starter",
       component: VARIARION_COMPONENT.checkbox,
-      default: false,
-      type: VARIARION_TYPE.addProperty,
-      property: {
-        starter: true,
-      },
+      defaultValue: false,
     });
   }
 
-  // for all: change the count
-  vars.push({
-    name: "Count",
-    component: VARIARION_COMPONENT.numberInput,
-    type: VARIARION_TYPE.changeCount,
-    default: count || 1,
-  });
-  // for all: change the price
-  vars.push({
-    name: "Price",
-    component: VARIARION_COMPONENT.numberInput,
-    type: VARIARION_TYPE.changePrice,
-    default: price,
-  });
+  // // for all: change the count
+  // vars.push({
+  //   name: "Count",
+  //   component: VARIARION_COMPONENT.numberInput,
+  //   defaultValue: count || 1,
+  // });
+  // // for all: change the price
+  // vars.push({
+  //   name: "Price",
+  //   component: VARIARION_COMPONENT.numberInput,
+  //   defaultValue: price,
+  // });
 
   if (!variations) return vars;
   return [...vars, ...variations];

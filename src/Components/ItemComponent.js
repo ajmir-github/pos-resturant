@@ -1,6 +1,7 @@
 import {
   EURO_SYMBOL,
   ITEM_CATEGORY,
+  VARIARION_COMPONENT,
   classes,
   conditionalClasses,
 } from "@/utils";
@@ -9,21 +10,23 @@ export function ItemComponent({ item, onItemButton, onMoreButton, onDelete }) {
   const count = item.count || 1;
   const multiple = count > 1;
   return (
-    <div className={classes("join w-full ")}>
+    <div className={"join w-full"}>
       <button
         onClick={onItemButton}
-        className={classes(
-          "join-item btn h-auto items-center grow flex btn-sm p-2 "
-        )}
+        className={"join-item btn h-auto items-center grow flex btn-sm p-2"}
       >
-        <span className={classes("grow text-left")}>
+        <span className={"grow text-left p-1"}>
           <div>
             {multiple && count + "x"} {item.name}
           </div>
           <div className="flex flex-col text-sm ml-2">
-            {item.variant &&
-              item.variant.map((variant, index) => (
-                <span key={index}>{variant}</span>
+            {item.modifications &&
+              item.modifications.map((mod, index) => (
+                <span key={index} className="text-secondary text-xs">
+                  {mod.name}
+                  {mod.component === VARIARION_COMPONENT.select &&
+                    " : " + mod.value}
+                </span>
               ))}
           </div>
         </span>

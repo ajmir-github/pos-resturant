@@ -10,6 +10,7 @@ import {
   VARIARION_TYPE,
   ITEM_CATEGORY,
   getMustHaveVariations,
+  applyVarsOnItem,
 } from "@/utils";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -122,8 +123,15 @@ export default function Cart({ cartItems, removeFromCart }) {
     [cartItems]
   );
   const is = {
-    starter: (item) => item.starter && item.category === ITEM_CATEGORY.foods,
-    main: (item) => !item.starter && item.category === ITEM_CATEGORY.foods,
+    starter: (item) =>
+      item.modifications &&
+      item.modifications.some((m) => m.name === "Starter") &&
+      item.category === ITEM_CATEGORY.foods,
+    main: (item) =>
+      !(
+        item.modifications &&
+        item.modifications.some((m) => m.name === "Starter")
+      ) && item.category === ITEM_CATEGORY.foods,
     drink: (item) => item.category === ITEM_CATEGORY.drinks,
     dessert: (item) => item.category === ITEM_CATEGORY.desserts,
   };
@@ -141,17 +149,20 @@ export default function Cart({ cartItems, removeFromCart }) {
   const Category = ({ title, items }) => (
     <div className="flex flex-col gap-1 sm:gap-2">
       <div className="text-lg text-center">{title}</div>
-      {items.map((item, index) => {
-        const id = "CART_ITEM:" + item.id + "+INDEX" + index;
+      {items.map((item) => {
         return (
-          <div key={id}>
+          <div key={item.id}>
             <ItemComponent
               item={item}
               onDelete={removeFromCart}
-              onItemButton={() => window[id].showModal()}
+              // onItemButton={() => window[item.id].showModal()}
+              onItemButton={() => console.log(item)}
             />
-            <dialog id={id} className="modal">
-              <ItemSettings item={item} closeModal={() => window[id].close()} />
+            <dialog id={item.id} className="modal">
+              {/* <ItemSettings
+                item={item}
+                closeModal={() => window[item.id].close()}
+              /> */}
             </dialog>
           </div>
         );
