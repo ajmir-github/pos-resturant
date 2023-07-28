@@ -52,8 +52,11 @@ export default function Table() {
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-secondary hidden md:inline-flex">
               Change
             </div>
+            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary hidden md:inline-flex">
+              Descount
+            </div>
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
-              Print Orders
+              Print <span className="hidden lg:block">Orders</span>
             </div>
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-error">
               Edit
@@ -70,7 +73,10 @@ export default function Table() {
           <div className="flex gap-1 flex-wrap">
             {ITEM_CATEGORIES.map((category, index) => (
               <div
-                className={classes("btn rounded-none btn-lg ", category.color)}
+                className={classes(
+                  "btn rounded-none btn-sm md:btn-md lg:btn-lg",
+                  category.color
+                )}
                 key={category.name + index}
               >
                 {category.name}
@@ -84,9 +90,7 @@ export default function Table() {
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary">
               Pay
             </div>
-            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-secondary">
-              Descount
-            </div>
+
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
               Reciept
             </div>
