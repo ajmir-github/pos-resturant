@@ -49,8 +49,8 @@ export default function Table() {
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary btn-disabled">
               Back
             </div>
-            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-secondary">
-              Change Table
+            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-secondary hidden md:inline-flex">
+              Change
             </div>
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
               Print Orders
@@ -88,7 +88,7 @@ export default function Table() {
               Descount
             </div>
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
-              Print Reciept
+              Reciept
             </div>
             <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-error">
               Split
