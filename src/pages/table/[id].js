@@ -94,7 +94,7 @@ function Feed() {
               <div className="join">
                 <div
                   className={classes(
-                    "join-item btn rounded-none btn-sm md:btn-md lg:btn-lg",
+                    "join-item btn rounded-none btn-sm md:btn-md",
                     item.color
                   )}
                   key={item.name + index}
@@ -103,7 +103,7 @@ function Feed() {
                 </div>
                 <button
                   className={classes(
-                    "join-item btn rounded-none btn-outline btn-sm md:btn-md lg:btn-lg",
+                    "join-item btn rounded-none btn-outline btn-sm md:btn-md",
                     item.color
                   )}
                 >
@@ -128,7 +128,7 @@ function Feed() {
               <button
                 onClick={() => setCategory(category.name)}
                 className={classes(
-                  "btn rounded-none btn-sm md:btn-md lg:btn-lg",
+                  "btn rounded-none btn-sm md:btn-md",
                   category.color
                 )}
                 key={category.name + index}
