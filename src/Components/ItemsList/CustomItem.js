@@ -1,4 +1,4 @@
-import TopNav from "@/Components/Top";
+import TopNav from "@/Components/TopPanel";
 import {
   EURO_SYMBOL,
   classes,
