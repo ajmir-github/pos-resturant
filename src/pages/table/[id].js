@@ -4,125 +4,159 @@ import TopNav from "@/Components/TopPanel";
 import { EURO_SYMBOL, classes, generateID } from "@/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function Feed() {
+const ITEM_TYPE = {
+  food: "Food",
+  drink: "Drink",
+  dessert: "dessert",
+};
+const ITEM_CATEGORIES = [
+  { name: "Starters", color: "btn-primary" },
+  { name: "Steaks", color: "btn-secondary" },
+  { name: "Pasta", color: "btn-info" },
+  { name: "Salads", color: "btn-warning" },
+  { name: "Beverages", color: "btn-success" },
+  { name: "Cooktails", color: "btn-primary" },
+  { name: "Soft Drinks", color: "btn-info" },
+  { name: "Beers", color: "btn-primary" },
+  { name: "Apperitives", color: "btn-primary" },
+  { name: "White Wines", color: "btn-secondary" },
+  { name: "Rose Wine", color: "btn-primary" },
+  { name: "Red Wine", color: "btn-neutral" },
+  { name: "Kids", color: "btn-accent" },
+  { name: "Desserts", color: "btn-ghost" },
+];
+
+const ITEMS = [
+  {
+    name: "Lava Cake",
+    type: ITEM_TYPE.dessert,
+    category: "Desserts",
+    color: "btn-secondary",
+    price: 7.5,
+  },
+  {
+    name: "Cheese Cake",
+    type: ITEM_TYPE.dessert,
+
+    category: "Desserts",
+    color: "btn-warning",
+    price: 6.5,
+  },
+  {
+    name: "Freshstrawberries",
+    type: ITEM_TYPE.dessert,
+
+    category: "Desserts",
+    color: "btn-secondary",
+    price: 5,
+  },
+  {
+    name: "Cola",
+    type: ITEM_TYPE.drink,
+
+    category: "Soft Drinks",
+    color: "btn-secondary",
+    price: 2.5,
+  },
+  {
+    name: "Cola Zero",
+    type: ITEM_TYPE.drink,
+    category: "Soft Drinks",
+    color: "btn-error",
+    price: 2.5,
+  },
+  {
+    name: "Speggitte Carbonara",
+    type: ITEM_TYPE.food,
+    category: "Pasta",
+    color: "btn-error",
+    price: 12.5,
+  },
+  {
+    name: "Halumi",
+    type: ITEM_TYPE.food,
+    category: "Starters",
+    starter: true,
+    color: "btn-error",
+    price: 12.5,
+  },
+];
+
+const ITEM_GROUPS = [
+  {
+    id: "CART_GROUP_1",
+    name: "Starters",
+    filterFunc: (item) => item.type === ITEM_TYPE.food && item.starter,
+  },
+  {
+    id: "CART_GROUP_2",
+    name: "Mains",
+    filterFunc: (item) => item.type === ITEM_TYPE.food && !item.starter,
+  },
+  {
+    id: "CART_GROUP_3",
+    name: "Desserts",
+    filterFunc: (item) => item.type === ITEM_TYPE.dessert,
+  },
+  {
+    id: "CART_GROUP_4",
+    name: "Drinks",
+    filterFunc: (item) => item.type === ITEM_TYPE.drink,
+  },
+];
+function Feed({ addItemToCart }) {
   const [category, setCategory] = useState(null);
-  const ITEM_CATEGORIES = [
-    { name: "Starters", color: "btn-primary" },
-    { name: "Steaks", color: "btn-secondary" },
-    { name: "Pasta", color: "btn-info" },
-    { name: "Salads", color: "btn-warning" },
-    { name: "Beverages", color: "btn-success" },
-    { name: "Cooktails", color: "btn-primary" },
-    { name: "Soft Drinks", color: "btn-info" },
-    { name: "Beers", color: "btn-primary" },
-    { name: "Apperitives", color: "btn-primary" },
-    { name: "White Wines", color: "btn-secondary" },
-    { name: "Rose Wine", color: "btn-primary" },
-    { name: "Red Wine", color: "btn-neutral" },
-    { name: "Kids", color: "btn-accent" },
-    { name: "Desserts", color: "btn-ghost" },
-  ];
+  const [search, setSearch] = useState("");
 
-  const ITEMS = [
-    {
-      name: "Lava Cake",
-      category: "Desserts",
-      color: "btn-secondary",
-      price: 7.5,
-    },
-    {
-      name: "Cheese Cake",
-      category: "Desserts",
-      color: "btn-warning",
-      price: 6.5,
-    },
-    {
-      name: "Freshstrawberries",
-      category: "Desserts",
-      color: "btn-secondary",
-      price: 5,
-    },
-    {
-      name: "Cola",
-      category: "Soft Drinks",
-      color: "btn-secondary",
-      price: 2.5,
-    },
-    {
-      name: "Cola Zero",
-      category: "Soft Drinks",
-      color: "btn-error",
-      price: 2.5,
-    },
-  ];
+  const searchMode = !!search;
+  const filterFunc = (item) => {
+    if (search) {
+      const pattern = new RegExp(search, "ig");
+      return pattern.test(item.name);
+    }
+    return item.category === category;
+  };
+
   return (
-    <div className="md:col-span-2 flex flex-col gap-1">
-      <div className="flex gap-1">
-        <button
-          className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary"
-          disabled={category === null}
-          onClick={() => setCategory(null)}
-        >
-          Back
-        </button>
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-secondary hidden md:inline-flex">
-          Change
-        </div>
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary hidden md:inline-flex">
-          Descount
-        </div>
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
-          Print <span className="hidden lg:block">Orders</span>
-        </div>
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-error">
-          Edit
-        </div>
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-warning btn-disabled">
-          Save
-        </div>
-      </div>
+    <div className=" flex flex-col gap-1">
       <input
         type="text"
         placeholder="Search Here"
-        className="input input-bordered rounded-none w-full "
+        className="input input-bordered rounded-none w-full"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
       />
       <div className="flex gap-1 flex-wrap">
-        {category
-          ? ITEMS.filter((i) => i.category === category).map((item, index) => (
-              <div className="join">
-                <div
-                  className={classes(
-                    "join-item btn rounded-none btn-sm md:btn-md",
-                    item.color
-                  )}
-                  key={item.name + index}
-                >
-                  {item.name}
-                </div>
-                <button
-                  className={classes(
-                    "join-item btn rounded-none btn-outline btn-sm md:btn-md",
-                    item.color
-                  )}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-                    />
-                  </svg>
-                </button>
-              </div>
+        {searchMode ? (
+          <button
+            className="btn rounded-none btn-sm md:btn-md btn-secondary btn-outline"
+            onClick={() => setSearch("")}
+          >
+            Clear
+          </button>
+        ) : (
+          <button
+            className="btn rounded-none btn-sm md:btn-md btn-secondary btn-outline"
+            disabled={category === null}
+            onClick={() => setCategory(null)}
+          >
+            Back
+          </button>
+        )}
+        {category || searchMode
+          ? ITEMS.filter(filterFunc).map((item, index) => (
+              <button
+                onClick={() => addItemToCart(item)}
+                className={classes(
+                  "btn rounded-none btn-sm md:btn-md",
+                  item.color
+                )}
+                key={item.name + index}
+              >
+                {item.name}
+              </button>
             ))
           : ITEM_CATEGORIES.map((category, index) => (
               <button
@@ -141,7 +175,7 @@ function Feed() {
   );
 }
 
-function Cart(params) {
+function Cart({ cartItems, activeItem, setSelectedItem }) {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex gap-1">
@@ -156,19 +190,45 @@ function Cart(params) {
           Split
         </div>
       </div>
-      <div className="">
-        <ul className="menu bg-base-100">
-          <li className="menu-title">Title</li>
-          <li>
-            <a>Item 1</a>
-          </li>
-          <li>
-            <a>Item 2</a>
-          </li>
-          <li>
-            <a>Item 3</a>
-          </li>
-        </ul>
+      <div className="bg-base-100 flex flex-col">
+        {ITEM_GROUPS.map((group) => (
+          <ul
+            className="menu   font-bold  p-0 [&_li>*]:rounded-none [&_summary>*]:rounded-none"
+            key={group.id}
+          >
+            <li className="">
+              <details open className="">
+                <summary className="rounded-none">{group.name}</summary>
+                <ul>
+                  {cartItems.filter(group.filterFunc).map((item) => {
+                    const isSelected = activeItem(item);
+                    return (
+                      <li key={item.id}>
+                        <button
+                          className={classes(
+                            "flex",
+                            isSelected && "border-2 border-primary"
+                            // isSelected && "border-l-2"
+                          )}
+                          onClick={() => setSelectedItem(item, isSelected)}
+                        >
+                          <span className="grow">{item.name}</span>
+                          <span>
+                            {EURO_SYMBOL}
+                            {item.price}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </details>
+            </li>
+          </ul>
+        ))}
+        <div className="font-bold text-center p-1 bg-orange-500 text-white">
+          Total: {EURO_SYMBOL}120.4
+        </div>
       </div>
     </div>
   );
@@ -177,6 +237,24 @@ function Cart(params) {
 export default function Table() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const addItemToCart = (item) => {
+    // clone and add new id to it
+    const newItem = JSON.parse(JSON.stringify(item));
+    newItem.id = generateID();
+    setCartItems([...cartItems, newItem]);
+  };
+
+  const selectItem = (item, isSelected) => {
+    if (!isSelected) return setSelectedItem(item);
+    setSelectedItem(null);
+  };
+
+  const activeItem = (item) => {
+    if (!selectedItem) return false;
+    return selectedItem.id === item.id;
+  };
 
   return (
     <div className="flex flex-col items-stretch sm:min-h-screen">
@@ -186,8 +264,35 @@ export default function Table() {
       </TopPanel>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 px-1 gap-1">
-        <Feed />
-        <Cart />
+        <div className="md:col-span-2 flex flex-col gap-1">
+          <div className="flex gap-1">
+            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-secondary hidden md:inline-flex">
+              Change
+            </div>
+            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary hidden md:inline-flex">
+              Descount
+            </div>
+            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
+              Print <span className="hidden lg:block">Orders</span>
+            </div>
+            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-error">
+              Edit
+            </div>
+            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-warning btn-disabled">
+              Save
+            </div>
+          </div>
+          {selectedItem ? (
+            <div>{selectedItem.name}</div>
+          ) : (
+            <Feed addItemToCart={addItemToCart} />
+          )}
+        </div>
+        <Cart
+          cartItems={cartItems}
+          activeItem={activeItem}
+          setSelectedItem={selectItem}
+        />
       </div>
     </div>
   );

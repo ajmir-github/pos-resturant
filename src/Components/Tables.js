@@ -27,7 +27,7 @@ export default function Tables({ tables, selectTable }) {
           <Link
             href={`/table/${table.id}`}
             className={classes(
-              "btn h-20 sm:h-24  w-20 sm:w-24 text-2xl sm:text-4xl relative rounded-none",
+              "btn h-20 sm:h-24  w-20 sm:w-24 text-2xl sm:text-4xl relative",
               conditionalClasses(table.status, {
                 [TABLE_STATUS.close]: "btn-ghost",
                 [TABLE_STATUS.open]: "btn-primary",
@@ -40,13 +40,8 @@ export default function Tables({ tables, selectTable }) {
             onClick={() => selectTable(table.id)}
           >
             {table.tableNumber}
-            {table.hasStarter && (
-              <span className="text-xs  absolute bottom-1 left-2">Starter</span>
-            )}
-            <span className="text-xs  absolute top-1 left-2">
-              {table.status}
-            </span>
-            <span className="text-xs  absolute bottom-1 right-2">
+            <span className="text-xs  absolute top-2 left-2">45 mins</span>
+            <span className="text-xs  absolute bottom-2 right-2">
               {table.customers}
             </span>
           </Link>
