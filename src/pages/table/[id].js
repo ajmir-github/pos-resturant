@@ -178,25 +178,11 @@ function Feed({ addItemToCart }) {
 function Cart({ cartItems, activeItem, setSelectedItem }) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex gap-1">
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary">
-          Pay
-        </div>
-
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
-          Reciept
-        </div>
-        <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-error">
-          Split
-        </div>
-      </div>
       <div className="bg-base-100 flex flex-col">
-        {ITEM_GROUPS.map((group) => (
-          <ul
-            className="menu   font-bold  p-0 [&_li>*]:rounded-none [&_summary>*]:rounded-none"
-            key={group.id}
-          >
-            <li className="">
+        <ul className="menu  font-bold  p-0 [&_li>*]:rounded-none [&_summary>*]:rounded-none">
+          <li className="menu-title">Cart</li>
+          {ITEM_GROUPS.map((group) => (
+            <li className="" key={group.id}>
               <details open className="">
                 <summary className="rounded-none">{group.name}</summary>
                 <ul>
@@ -207,7 +193,7 @@ function Cart({ cartItems, activeItem, setSelectedItem }) {
                         <button
                           className={classes(
                             "flex",
-                            isSelected && "border-2 border-primary"
+                            isSelected && "border-x-2 border-primary"
                             // isSelected && "border-l-2"
                           )}
                           onClick={() => setSelectedItem(item, isSelected)}
@@ -224,9 +210,9 @@ function Cart({ cartItems, activeItem, setSelectedItem }) {
                 </ul>
               </details>
             </li>
-          </ul>
-        ))}
-        <div className="font-bold text-center p-1 bg-orange-500 text-white">
+          ))}
+        </ul>
+        <div className="font-bold text-center p-2 bg-orange-500 text-white">
           Total: {EURO_SYMBOL}120.4
         </div>
       </div>
@@ -257,31 +243,32 @@ export default function Table() {
   };
 
   return (
-    <div className="flex flex-col items-stretch sm:min-h-screen">
+    <div className="flex flex-col items-stretch sm:min-h-screen gap-1">
       <TopPanel backHref={"/sales"} userName={"Ajmir Raziqi"}>
         <span>Table: {router.query.id}</span>
         <span>Customers: 4</span>
       </TopPanel>
 
+      <div className="flex gap-1 px-1">
+        <div className="btn rounded-none grow w-auto btn-outline btn-sm btn-warning btn-disabled">
+          Save
+        </div>
+        <div className="btn rounded-none grow w-auto btn-outline btn-sm btn-error">
+          Edit
+        </div>
+        <div className="btn rounded-none grow w-auto btn-outline btn-sm btn-info">
+          More
+        </div>
+        <div className="btn rounded-none grow w-auto btn-outline btn-sm btn-primary">
+          Pay
+        </div>
+
+        <div className="btn rounded-none grow w-auto btn-outline btn-sm btn-success">
+          Reciept
+        </div>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 px-1 gap-1">
         <div className="md:col-span-2 flex flex-col gap-1">
-          <div className="flex gap-1">
-            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-secondary hidden md:inline-flex">
-              Change
-            </div>
-            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-primary hidden md:inline-flex">
-              Descount
-            </div>
-            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-success">
-              Print <span className="hidden lg:block">Orders</span>
-            </div>
-            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-error">
-              Edit
-            </div>
-            <div className="btn rounded-none grow w-auto btn-outline btn-xs md:btn-sm btn-warning btn-disabled">
-              Save
-            </div>
-          </div>
           {selectedItem ? (
             <div>{selectedItem.name}</div>
           ) : (
