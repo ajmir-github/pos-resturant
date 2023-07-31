@@ -4,6 +4,10 @@ export function classes(...cls) {
   return cls.filter(Boolean).join(" ");
 }
 
+export function deepClone(object) {
+  return JSON.parse(JSON.stringify(object));
+}
+
 export function generateID(length = 16) {
   //Instantiate
   const uid = new ShortUniqueId({ length });
@@ -18,6 +22,64 @@ export function conditionalComponents(condition, Components) {
   return Components[condition] || Components.default;
 }
 
+const ADDITION_ENUMS = {
+  and: ":&:",
+  or: ":|:",
+  true: "1",
+  false: "0",
+};
+export function stringifyAdditions(additions) {
+  return (additions || []).map(
+    ({ name, type, defaultValue, value, options }) => {
+      if (type === ADDITION_TYPE.select)
+        return `${name}${ADDITION_ENUMS.and}${type}${
+          ADDITION_ENUMS.and
+        }${defaultValue}${ADDITION_ENUMS.and}${value || defaultValue}${
+          ADDITION_ENUMS.and
+        }${options.join(ADDITION_ENUMS.or)}`;
+
+      if (type === ADDITION_TYPE.checkbox)
+        return `${name}${ADDITION_ENUMS.and}${type}${ADDITION_ENUMS.and}${
+          defaultValue ? ADDITION_ENUMS.true : ADDITION_ENUMS.false
+        }${ADDITION_ENUMS.and}${
+          value || defaultValue ? ADDITION_ENUMS.true : ADDITION_ENUMS.false
+        }`;
+      return `${name}:${type}:${defaultValue}:${value || defaultValue}`;
+    }
+  );
+}
+
+export function parseAdditions(additions) {
+  return (additions || []).map((addition) => {
+    const [name, type, defaultValue, value, options] = addition.split(
+      ADDITION_ENUMS.and
+    );
+    if (type === ADDITION_TYPE.select)
+      return {
+        name,
+        type,
+        defaultValue,
+        value,
+        options: options.split(ADDITION_ENUMS.or),
+      };
+
+    if (type === ADDITION_TYPE.checkbox)
+      return {
+        name,
+        type,
+        defaultValue: defaultValue === ADDITION_ENUMS.true,
+        value: value === ADDITION_ENUMS.true,
+      };
+
+    return {
+      name,
+      type,
+      defaultValue,
+      value,
+    };
+  });
+}
+
 // -------------- ENUMS
 export const TABLE_STATUS = {
   close: "CLOSE",
@@ -28,180 +90,111 @@ export const TABLE_STATUS = {
 
 export const EURO_SYMBOL = <>&#8364;</>;
 
-export const ITEM_CATEGORY = {
-  foods: "Foods",
-  drinks: "Drinks",
-  desserts: "Desserts",
+export const ITEM_TYPE = {
+  food: "Food",
+  drink: "Drink",
+  dessert: "dessert",
 };
 
-export const ITEM_CATEGORIES = ["Foods", "Drinks", "Desserts"];
-export const ITEM_SUB_CATEGORIES = {
-  [ITEM_CATEGORY.drinks]: [
-    "Apperitives",
-    "Coffee",
-    "Cooktails",
-    "Soft Drinks",
-    "Red Wines",
-    "White Wines",
-    "Rose Wines",
-  ],
-  [ITEM_CATEGORY.foods]: [
-    "Starters",
-    "Pizza",
-    "Side Dishes",
-    "Pasta",
-    "Steaks",
-    "Salads",
-  ],
-  [ITEM_CATEGORY.desserts]: ["Hot desserts", "Cold desserts"],
-};
-
-export const VARIARION_COMPONENT = {
+export const ADDITION_TYPE = {
   checkbox: "checkbox",
   select: "select",
   numberInput: "numberInput",
   textInput: "textInput",
 };
-
-export const VARIARION_TYPE = {
-  addToPrice: "ADD_TO_PRICE",
-  substructFromPrice: "SUBTRACT_FROM_PRICE",
-  changePrice: "CHANGE_PRICE",
-  addProperty: "ADD_PROPERTY",
-  changeCount: "CHANGE_COUNT",
-  non: "NON",
-};
+export const ITEM_CATEGORIES = [
+  { name: "Starters", color: "btn-primary" },
+  { name: "Steaks", color: "btn-secondary" },
+  { name: "Pasta", color: "btn-info" },
+  { name: "Salads", color: "btn-warning" },
+  { name: "Beverages", color: "btn-success" },
+  { name: "Cooktails", color: "btn-primary" },
+  { name: "Soft Drinks", color: "btn-info" },
+  { name: "Beers", color: "btn-primary" },
+  { name: "Apperitives", color: "btn-primary" },
+  { name: "White Wines", color: "btn-secondary" },
+  { name: "Rose Wine", color: "btn-primary" },
+  { name: "Red Wine", color: "btn-neutral" },
+  { name: "Kids", color: "btn-accent" },
+  { name: "Desserts", color: "btn-ghost" },
+];
 
 export const ITEMS = [
   {
-    id: "itemID-1",
-    category: ITEM_CATEGORY.foods,
-    subCategory: "Pasta",
-    name: "Ragatoni Arrabiata",
-    price: 10,
-    veg: true,
-    variations: [
-      {
-        name: "Gluten Free",
-        component: VARIARION_COMPONENT.checkbox,
-        defaultValue: false,
-      },
-      {
-        name: "Meat",
-        component: VARIARION_COMPONENT.select,
-        options: [
-          "Rare",
-          "Rare-to-medium",
-          "Medium",
-          "Medium-to-well-Done",
-          "Well-Done",
-        ],
-        defaultValue: "Medium",
-      },
-    ],
+    name: "Lava Cake",
+    type: ITEM_TYPE.dessert,
+    category: "Desserts",
+    color: "btn-secondary",
+    price: 7.5,
   },
   {
-    id: "itemID-2",
-    category: ITEM_CATEGORY.foods,
-    subCategory: "Pasta",
-    name: "Taggatelle Pollo",
-    price: 11,
+    name: "Cheese Cake",
+    type: ITEM_TYPE.dessert,
+
+    category: "Desserts",
+    color: "btn-warning",
+    price: 6.5,
   },
   {
-    id: "itemID-3",
-    category: ITEM_CATEGORY.foods,
-    subCategory: "Pasta",
-    name: "Languine Seafood",
-    price: 15.5,
+    name: "Freshstrawberries",
+    type: ITEM_TYPE.dessert,
+
+    category: "Desserts",
+    color: "btn-secondary",
+    price: 5,
   },
   {
-    id: "itemID-4",
-    category: ITEM_CATEGORY.foods,
-    subCategory: "Pizza",
-    name: "Pizza Margaritta",
-    price: 10.5,
-    veg: true,
-    variations: [
-      {
-        name: "With mushrooms",
-        component: VARIARION_COMPONENT.checkbox,
-      },
-    ],
+    name: "Cola",
+    type: ITEM_TYPE.drink,
+
+    category: "Soft Drinks",
+    color: "btn-secondary",
+    price: 2.5,
+    possibleAdditions: ["No ice", "Battle", "Zero", "Mixer"],
   },
   {
-    id: "itemID-5",
-    category: ITEM_CATEGORY.foods,
-    subCategory: "Pizza",
-    name: "Pizza Hawian",
-    price: 12.5,
-    veg: true,
-  },
-  {
-    id: "itemID-6",
-    category: ITEM_CATEGORY.drinks,
-    subCategory: "Cooktails",
-    name: "Pink Spritis",
-    price: 5.5,
-  },
-  {
-    id: "itemID-7",
-    category: ITEM_CATEGORY.drinks,
-    subCategory: "Soft Drinks",
     name: "Cola Zero",
+    type: ITEM_TYPE.drink,
+    category: "Soft Drinks",
+    color: "btn-error",
     price: 2.5,
   },
-
   {
-    id: "itemID-8",
-    category: ITEM_CATEGORY.drinks,
-    subCategory: "Cooktails",
-    name: "Mojito",
-    price: 4.5,
-    variations: [
-      {
-        name: "Non-alcoholic",
-        component: VARIARION_COMPONENT.checkbox,
-        defaultValue: false,
-      },
-      {
-        name: "Mixer",
-        component: VARIARION_COMPONENT.select,
-        options: ["Classic", "Strawberry"],
-        defaultValue: "Classic",
-      },
-    ],
+    name: "Speggitte Carbonara",
+    type: ITEM_TYPE.food,
+    category: "Pasta",
+    color: "btn-error",
+    price: 12.5,
+  },
+  {
+    name: "Halumi",
+    type: ITEM_TYPE.food,
+    category: "Starters",
+    starter: true,
+    color: "btn-error",
+    price: 12.5,
   },
 ];
 
-export const getMustHaveVariations = ({
-  category,
-  price,
-  count,
-  variations,
-}) => {
-  const vars = [];
-  // only for food
-  if (category === ITEM_CATEGORY.foods) {
-    vars.push({
-      name: "Starter",
-      component: VARIARION_COMPONENT.checkbox,
-      defaultValue: false,
-    });
-  }
-
-  // // for all: change the count
-  // vars.push({
-  //   name: "Count",
-  //   component: VARIARION_COMPONENT.numberInput,
-  //   defaultValue: count || 1,
-  // });
-  // // for all: change the price
-  // vars.push({
-  //   name: "Price",
-  //   component: VARIARION_COMPONENT.numberInput,
-  //   defaultValue: price,
-  // });
-
-  if (!variations) return vars;
-  return [...vars, ...variations];
-};
+export const ITEM_GROUPS = [
+  {
+    id: "CART_GROUP_1",
+    name: "Starters",
+    filterFunc: (item) => item.type === ITEM_TYPE.food && item.starter,
+  },
+  {
+    id: "CART_GROUP_2",
+    name: "Mains",
+    filterFunc: (item) => item.type === ITEM_TYPE.food && !item.starter,
+  },
+  {
+    id: "CART_GROUP_3",
+    name: "Desserts",
+    filterFunc: (item) => item.type === ITEM_TYPE.dessert,
+  },
+  {
+    id: "CART_GROUP_4",
+    name: "Drinks",
+    filterFunc: (item) => item.type === ITEM_TYPE.drink,
+  },
+];
